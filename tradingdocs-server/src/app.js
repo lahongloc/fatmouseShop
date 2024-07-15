@@ -4,10 +4,12 @@ const morgan = require("morgan");
 const methodOverride = require("method-override");
 const handlebars = require("express-handlebars");
 const bodyParser = require("body-parser");
+// const multer = require("multer");
 const cors = require("cors");
 const app = express();
 const port = 3000;
 
+// CORS configuration
 const corsOptions = {
 	origin: "http://localhost:3001",
 	optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
@@ -59,7 +61,13 @@ route(app);
 
 // Body-Parser Middleware
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+	bodyParser.urlencoded({
+		extended: true,
+		keepExtensions: true,
+		uploadDir: "uploads",
+	}),
+);
 
 app.listen(port, () => {
 	console.log(`App listening on port http://localhost:${port}`);
