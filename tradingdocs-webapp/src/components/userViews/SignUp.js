@@ -1,9 +1,18 @@
 import React, { useState } from "react";
-import { Grid, Typography, TextField, Button, Box } from "@mui/material";
+import { Grid, Typography, TextField, Button, Box, Alert } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import APIs, { endpoints } from "../../configs/APIs";
+import LinearBuffer from "../UI-compos/LinearBuffer";
+import "animate.css";
 
 const SignUp = () => {
+	const [message, setMessage] = useState({
+		success: false,
+		error: false,
+	});
+	const [loading, setLoading] = useState(false);
+
 	const [formData, setFormData] = useState({
 		fullName: "",
 		gender: "", // Will store either 'male' or 'female'
@@ -24,11 +33,38 @@ const SignUp = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		// Handle form submission logic
-		console.log(formData);
+
+		const signup = async () => {
+			setLoading(true);
+			try {
+				const res = await APIs.post(endpoints["register"], formData);
+				setMessage((prev) => {
+					return { error: false, success: true };
+				});
+			} catch (err) {
+				setMessage((prev) => {
+					return { success: false, error: true };
+				});
+				console.error(err);
+			} finally {
+				setLoading(false);
+				setTimeout(() => {
+					setMessage({
+						success: false,
+						error: false,
+					});
+				}, 5000);
+			}
+		};
+
+		signup();
+
+		// console.log(formData);
 	};
 
 	return (
 		<Grid sx={{ padding: 10, paddingRight: 15 }} container spacing={5}>
+			{loading && <LinearBuffer />}
 			{/* Left Side: Title */}
 			<Grid item xs={10} sm={5}>
 				<Typography
@@ -88,6 +124,31 @@ const SignUp = () => {
 					boxShadow={3}
 					borderRadius={5}
 				>
+					<Typography gutterBottom>
+						{message.success && (
+							<Alert
+								className="animate__animated animate__tada"
+								sx={{
+									borderRadius: 3,
+								}}
+								severity="success"
+							>
+								Đăng ký thành công!
+							</Alert>
+						)}
+						{message.error && (
+							<Alert
+								className="animate__animated animate__wobble"
+								sx={{
+									borderRadius: 3,
+								}}
+								severity="error"
+							>
+								Đăng ký thất bại, username hoặc email đã tồn
+								tại!
+							</Alert>
+						)}
+					</Typography>
 					<Typography variant="h6" gutterBottom>
 						Đăng ký tài khoản
 					</Typography>
@@ -159,10 +220,12 @@ const SignUp = () => {
 								<FormControlLabel
 									control={
 										<Checkbox
-											checked={formData.gender === "male"}
+											checked={
+												formData.gender === "false"
+											}
 											onChange={handleChange}
 											name="gender"
-											value="male"
+											value="false"
 										/>
 									}
 									label="Male"
@@ -170,12 +233,10 @@ const SignUp = () => {
 								<FormControlLabel
 									control={
 										<Checkbox
-											checked={
-												formData.gender === "female"
-											}
+											checked={formData.gender === "true"}
 											onChange={handleChange}
 											name="gender"
-											value="female"
+											value="true"
 										/>
 									}
 									label="Female"

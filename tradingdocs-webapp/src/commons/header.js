@@ -17,10 +17,15 @@ import { LOGOUT } from "../reducers/actions";
 import { useNavigate } from "react-router-dom";
 import LoginIcon from "@mui/icons-material/Login";
 import AvatarChip from "../components/UI-compos/AvatarChip";
+import { isNormalUser } from "../authorizations/roleAuths";
 // import { isLecturer, isStudent } from "../UserAuthorization/UserAuthoriation";
 
 function Header() {
 	const [user, dispatch] = React.useContext(UserContext);
+
+	React.useEffect(() => {
+		console.log("userrr: ", user);
+	});
 	// const pages = ["Trang chủ", "Workspace", "Đề cương của tôi"];
 	const pages = [
 		{
@@ -110,20 +115,20 @@ function Header() {
 							>
 								TRANG CHỦ
 							</Button>
-							{user === null && (
-								<Button
-									onClick={() => {
-										nav("/student-register");
-									}}
-									sx={{
-										my: 2,
-										color: "white",
-										display: "block",
-									}}
-								>
-									Cấp tài khoản sinh viên
-								</Button>
-							)}
+							{/* {isNormalUser(user) && ( */}
+							<Button
+								onClick={() => {
+									nav("/upload-documents");
+								}}
+								sx={{
+									my: 2,
+									color: "white",
+									display: "block",
+								}}
+							>
+								Đăng tài liệu
+							</Button>
+							{/* )} */}
 							{/* {isLecturer(user) &&
 								pages.map((page, index) => (
 									<Button
@@ -158,14 +163,14 @@ function Header() {
 
 						{user ? (
 							<Box sx={{ flexGrow: 0 }}>
-								<Tooltip title={user.name}>
+								<Tooltip title={user.user.fullName}>
 									<IconButton
 										onClick={handleOpenUserMenu}
 										sx={{ p: 0 }}
 									>
 										<AvatarChip
-											avatar={user.avatar}
-											name={user.name}
+											avatar={user.user.image}
+											name={user.user.username}
 										/>
 										{/* <Avatar
 										alt="Remy Sharp"

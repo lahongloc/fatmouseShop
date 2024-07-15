@@ -5,7 +5,9 @@ import UserReducer from "./reducers/UserReducer";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import SignIn from "./components/userViews/SignIn";
 import SignUp from "./components/userViews/SignUp";
-import Header from "./commons/header";
+import Header from "./commons/Header";
+import { isNormalUser } from "./authorizations/roleAuths";
+import UploadDocument from "./components/site-compos/UploadDocument";
 
 export const UserContext = createContext();
 
@@ -19,7 +21,31 @@ function App() {
 		<UserContext.Provider value={[user, dispatch]} className="App">
 			<BrowserRouter>
 				<Header />
+				{/* <Routes>
+					{isNormalUser(user) && (
+						<Route
+							path="/upload-documents"
+							element={<UploadDocument />}
+						/>
+					)}
+					<Route path="/sign-in" element={<SignIn />} />
+					<Route path="/sign-up" element={<SignUp />} />
+				</Routes> */}
 				<Routes>
+					{!isNormalUser(user) && (
+						<Route
+							path="/upload-documents"
+							element={
+								<Navigate to="/sign-in/?next=upload-documents" />
+							}
+						/>
+					)}
+					{isNormalUser(user) && (
+						<Route
+							path="/upload-documents"
+							element={<UploadDocument />}
+						/>
+					)}
 					<Route path="/sign-in" element={<SignIn />} />
 					<Route path="/sign-up" element={<SignUp />} />
 				</Routes>

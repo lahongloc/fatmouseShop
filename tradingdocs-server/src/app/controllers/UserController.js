@@ -5,35 +5,39 @@ const auth = require("../../config/auth/jwtAuth");
 
 class UserController {
 	// [POST] /user/register
-	register(req, res, next) {
-		const { fullName, gender, username, password, email, hotline } =
-			req.body;
+	async register(req, res, next) {
+		try {
+			const { fullName, gender, username, password, email, hotline } =
+				req.body;
 
-		User.findOne({ username })
-			.then((user) => {
-				if (user) {
-					return res.status(400).json({ msg: "User already exists" });
-				}
+			const userByUsername = await User.findOne({ username });
+			if (userByUsername) {
+				throw new Error("Username already exists");
+			}
 
-				return bcrypt.hash(password, 10);
-			})
-			.then((hashedPassword) => {
-				const newUser = new User({
-					fullName,
-					gender,
-					username,
-					password: hashedPassword,
-					email,
-					hotline,
-				});
+			const userByEmail = await User.findOne({ email });
+			if (userByEmail) {
+				throw new Error("Email already exists");
+			}
 
-				newUser.save();
-				res.json({ status: 200, message: "successful" });
-			})
-			.catch((err) => {
-				console.error(err.message);
-				res.status(400).send("bad request");
+			const hashedPassword = await bcrypt.hash(password, 10);
+
+			const newUser = new User({
+				fullName,
+				gender,
+				username,
+				password: hashedPassword,
+				email,
+				hotline,
 			});
+
+			await newUser.save();
+
+			res.json({ status: 200, message: "Registration successful" });
+		} catch (err) {
+			console.error(err.message);
+			res.status(400).json({ status: 400, message: err.message });
+		}
 	}
 
 	// [POST] /user/login
@@ -61,6 +65,10 @@ class UserController {
 							user: {
 								id: user.id,
 								username: user.username,
+								email: user.email,
+								hotline: user.hotline,
+								fullName: user.fullName,
+								role: user.role,
 								// Add more fields as needed
 							},
 						};
@@ -77,16 +85,7 @@ class UserController {
 							);
 						}).then((token) => {
 							// Return token and user info
-							res.json({
-								token,
-								user: {
-									id: user.id,
-									username: user.username,
-									fullName: user.fullName,
-									email: user.email,
-									// Add more fields as needed
-								},
-							});
+							res.json({ token });
 						});
 					});
 			})
@@ -94,6 +93,11 @@ class UserController {
 				console.error(err.message);
 				res.status(500).send("Server Error");
 			});
+	}
+
+	// [GET] /user/current-user
+	takeCurrentUser(req, res) {
+		res.json({ message: "Current user info", user: req.user });
 	}
 }
 

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 async function connect() {
 	try {
-		await mongoose.connect("mongodb://localhost:27017/trade_document_db", {
+		await mongoose.connect("mongodb://localhost:27017/tradingdocs", {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 		});

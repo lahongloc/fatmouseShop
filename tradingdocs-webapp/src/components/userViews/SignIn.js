@@ -16,6 +16,9 @@ import APIs, { endpoints } from "../../configs/APIs";
 import { UserContext } from "../../App";
 import cookie from "react-cookies";
 import { LOGIN } from "../../reducers/actions";
+import LinearBuffer from "../UI-compos/LinearBuffer";
+import { Alert } from "@mui/material";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 function Copyright(props) {
 	return (
@@ -41,39 +44,60 @@ const defaultTheme = createTheme();
 
 export default function SignIn() {
 	const [user, dispatch] = React.useContext(UserContext);
+	const [loading, setLoading] = React.useState(false);
+	const [success, setSuccess] = React.useState(true);
+
+	const [q] = useSearchParams();
+	const navigate = useNavigate();
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		const userData = new FormData(event.currentTarget);
 
 		const sign = async () => {
+			setLoading(true);
 			try {
 				const res = await APIs.post(endpoints["login"], {
 					username: userData.get("username"),
 					password: userData.get("password"),
 				});
-				cookie.save("user", res.data.user);
 				cookie.save("token", res.data.token);
+
+				const currentUser = await APIs.get(endpoints["current-user"], {
+					headers: {
+						Authorization: res.data.token,
+					},
+				});
+				cookie.save("user", currentUser.data.user);
+				console.log("current: ", currentUser.data.user);
 
 				dispatch({
 					type: LOGIN,
-					payload: res.data.user,
+					payload: currentUser.data.user,
 				});
+				setSuccess(true);
+				const next = q.get("next");
+				if (next) {
+					navigate(`/${next}`);
+				}
 			} catch (err) {
+				setSuccess(false);
 				console.error(err);
+			} finally {
+				setLoading(false);
+				setTimeout(() => {
+					setSuccess(true);
+				}, 5000);
 			}
 		};
 
 		sign();
-
-		// console.log({
-		// 	email: data.get("email"),
-		// 	password: data.get("password"),
-		// });
 	};
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
+			{loading && <LinearBuffer />}
+
 			<Container component="main" maxWidth="xs">
 				<CssBaseline />
 				<Box
@@ -90,6 +114,18 @@ export default function SignIn() {
 					<Typography component="h1" variant="h5">
 						Đăng nhập
 					</Typography>
+					{success || (
+						<Alert
+							className="animate__animated animate__wobble"
+							sx={{
+								marginTop: 5,
+								marginBottom: 5,
+							}}
+							severity="warning"
+						>
+							Tên đăng nhập hoặc mật khẩu không chính xác!
+						</Alert>
+					)}
 					<Box
 						component="form"
 						onSubmit={handleSubmit}
