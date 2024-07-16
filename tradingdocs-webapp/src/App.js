@@ -10,6 +10,7 @@ import { isNormalUser } from "./authorizations/roleAuths";
 import UploadDocument from "./components/site-compos/UploadDocument";
 import UploadForm from "./components/site-compos/UpImage";
 import HomePage from "./components/site-compos/HomePage";
+import DocumentDetail from "./components/site-compos/DocumentDetail";
 
 export const UserContext = createContext();
 
@@ -52,6 +53,7 @@ function App() {
 					<Route path="/sign-in" element={<SignIn />} />
 					<Route path="/sign-up" element={<SignUp />} />
 					<Route path="/" element={<HomePage />} />
+					<Route path="/post-detail" element={<DocumentDetail />} />
 				</Routes>
 			</BrowserRouter>
 		</UserContext.Provider>

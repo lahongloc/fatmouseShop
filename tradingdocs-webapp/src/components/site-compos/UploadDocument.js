@@ -58,8 +58,7 @@ const UploadDocument = () => {
 		price: "",
 		description: "",
 		place: "",
-		time: "",
-		isNegotiable: false,
+		// isNegotiable: false,
 		quantity: "",
 	});
 	const recommendations = [
@@ -74,6 +73,7 @@ const UploadDocument = () => {
 		setFormData((prevFormData) => ({
 			...prevFormData,
 			[name]: type === "checkbox" ? checked : value,
+			[name]: value < 0 ? 0 : value,
 		}));
 	};
 
@@ -189,7 +189,6 @@ const UploadDocument = () => {
 												label="Giảng viên"
 												variant="outlined"
 												fullWidth
-												required
 												name="lecturer"
 												value={formData.lecturer}
 												onChange={handleChange}
@@ -326,21 +325,7 @@ const UploadDocument = () => {
 												onChange={handleChange}
 											/>
 										</Grid>
-										<Grid item xs={12} sm={6}>
-											<TextField
-												label="Thời gian hẹn lấy"
-												variant="outlined"
-												fullWidth
-												type="datetime-local"
-												InputLabelProps={{
-													shrink: true,
-												}}
-												name="time"
-												value={formData.time}
-												onChange={handleChange}
-											/>
-										</Grid>
-										<Grid item xs={12} sm={6}>
+										{/* <Grid item xs={12} sm={6}>
 											<FormControlLabel
 												control={
 													<Checkbox
@@ -353,7 +338,7 @@ const UploadDocument = () => {
 												}
 												label="Khách hàng có thể đề nghị địa điểm và thời gian lấy sản phẩm khác không?"
 											/>
-										</Grid>
+										</Grid> */}
 										<Grid item xs={12} sm={6}>
 											<TextField
 												label="Số lượng"

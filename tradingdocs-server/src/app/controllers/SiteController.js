@@ -1,11 +1,10 @@
 const uploadImage = require("../../config/clouds/cloudinary/uploadImage");
 const Post = require("../models/Post");
 const User = require("../models/User");
-const Place = require("../models/Place");
 class SiteController {
 	// [GET] /
 	async index(req, res, next) {
-		// Place.deleteMany({}).then(() => res("OK"));
+		// Post.deleteMany({}).then(() => res.send("OK"));
 		try {
 			const posts = await Post.aggregate([
 				{

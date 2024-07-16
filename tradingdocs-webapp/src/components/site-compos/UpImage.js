@@ -1,81 +1,33 @@
-import React, { useState } from "react";
-import {
-	Grid,
-	TextField,
-	Button,
-	Typography,
-	Card,
-	CardContent,
-} from "@mui/material";
-import axios from "axios";
-import APIs, { endpoints } from "../../configs/APIs";
+import ProductDetail from "../UI-compos/ProductDetail";
 
-const UploadForm = () => {
-	const [file, setFile] = useState(null);
-
-	const handleFileChange = (event) => {
-		setFile(event.target.files[0]);
-	};
-
-	const handleSubmit = async (event) => {
-		event.preventDefault();
-
-		const formData = new FormData();
-		formData.append("tenfile", file);
-		console.log(file);
-
-		try {
-			const response = await APIs.post(
-				endpoints["upload-test"],
-				formData,
-				{
-					headers: {
-						"Content-Type": "multipart/form-data",
-					},
-				},
-			);
-			console.log("File uploaded successfully", response.data);
-		} catch (error) {
-			console.error("Error uploading file", error);
-		}
-	};
-
-	return (
-		<Grid container spacing={2} justifyContent="center">
-			<Grid item xs={12} md={6}>
-				<Card>
-					<CardContent>
-						<Typography variant="h5" component="h2">
-							Upload Image
-						</Typography>
-						<form onSubmit={handleSubmit}>
-							<Grid container spacing={2}>
-								<Grid item xs={12}>
-									<TextField
-										type="file"
-										onChange={handleFileChange}
-										fullWidth
-										InputLabelProps={{ shrink: true }}
-									/>
-								</Grid>
-
-								<Grid item xs={12}>
-									<Button
-										type="submit"
-										variant="contained"
-										color="primary"
-										fullWidth
-									>
-										Upload
-									</Button>
-								</Grid>
-							</Grid>
-						</form>
-					</CardContent>
-				</Card>
-			</Grid>
-		</Grid>
-	);
+const product = {
+	_id: 26,
+	documentName: "Sách tiếng Anh",
+	durability: true,
+	lecturer: "",
+	category: 2,
+	userId: 3,
+	postType: {
+		_id: 4,
+		name: "Bán",
+	},
+	price: 250000,
+	image: "https://res.cloudinary.com/dbfh15hki/image/upload/f_auto,q_auto/3Tue%20Jul%2016%202024%2022:03:32%20GMT%2B0700%20(Indochina%20Time)?_a=BAMADKTE0",
+	description:
+		"Sách này mình mới mua không sài, pass lại cho bạn nào cần :((",
+	place: "OU nhà bè",
+	quantity: 2,
+	createdAt: "2024-07-16T15:03:34.475Z",
+	updatedAt: "2024-07-16T15:03:34.475Z",
+	user: {
+		_id: 3,
+		username: "KimBang",
+		role: "NORMAL_USER",
+	},
 };
 
-export default UploadForm;
+function UpImage() {
+	return <ProductDetail product={product} />;
+}
+
+export default UpImage;

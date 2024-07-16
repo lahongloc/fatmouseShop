@@ -1,10 +1,8 @@
 const mongoose = require("mongoose");
 const User = require("../models/User");
 const Category = require("../models/Category");
-const Place = require("../models/Place");
 const Post = require("../models/Post");
 const PostType = require("../models/PostType");
-const Documentation = require("../models/Documentation");
 const uploadImage = require("../../config/clouds/cloudinary/uploadImage");
 
 class PostController {
@@ -22,8 +20,7 @@ class PostController {
 			exchangeDocument,
 			place,
 			image,
-			time,
-			isNegotiable,
+			// isNegotiable,
 			quantity,
 		} = req.body;
 
@@ -45,18 +42,6 @@ class PostController {
 					return res.status(404).json({ msg: "Category not found" });
 				}
 
-				// Tạo mới Document với _id được tạo trước
-				const document = new Documentation({
-					name: documentName,
-					lecturer,
-					durability,
-					category: category,
-				});
-
-				// Lưu Document
-				return document.save();
-			})
-			.then((document) => {
 				// take PostType
 				return PostType.findById(postTypeId).then((postType) => {
 					if (!postType) {
@@ -65,42 +50,37 @@ class PostController {
 							.json({ msg: "PostType not found" });
 					}
 
-					// Create Place
-					const meetPlace = new Place({
-						description: place,
-						time: time,
-					});
-
-					// Save Place
-					return meetPlace.save().then(() => {
-						return uploadImage(
-							image,
-							`${foundUser._id + new Date().toString()}`,
-						).then((result) => {
-							// Create Post
-							const post = new Post({
-								userId: foundUser, // Assign found user's id
-								document: document,
-								postType: postType,
-								price: price,
-								image: result.optimizeUrl,
-								description: description,
-								place: meetPlace,
-								isNegotiable: isNegotiable,
-								quantity: quantity,
-								exchangeDocument: exchangeDocument,
-							});
-
-							return post.save().then(() => {
-								res.json({
-									status: 200,
-									msg: "Document created successfully",
-								});
-							});
+					return uploadImage(
+						image,
+						`${foundUser._id + new Date().toString()}`,
+					).then((result) => {
+						// Create Post
+						const post = new Post({
+							userId: foundUser, // Assign found user's id
+							documentName,
+							postType: postType,
+							lecturer,
+							durability,
+							price: price,
+							image: result.optimizeUrl,
+							description: description,
+							place,
+							// isNegotiable: isNegotiable,
+							quantity: quantity,
+							exchangeDocument: exchangeDocument,
+							category,
 						});
 
-						// Save Post
+						return post.save().then(() => {
+							res.json({
+								status: 200,
+								msg: "Document created successfully",
+							});
+						});
 					});
+
+					// Save Post
+					// });
 				});
 			})
 			.catch((err) => {
@@ -111,8 +91,13 @@ class PostController {
 
 	// [GET] /post/get-posts
 	async getPosts(req, res, next) {
+		console.log("hahaha: ", req.query.postId);
 		try {
+			const postId = req.query.postId ? Number(req.query.postId) : null;
+
+			const match = postId ? { $match: { _id: postId } } : { $match: {} };
 			const posts = await Post.aggregate([
+				match,
 				{
 					$lookup: {
 						from: "users",
@@ -137,7 +122,9 @@ class PostController {
 						pipeline: [
 							{
 								$match: {
-									$expr: { $eq: ["$_id", "$$postTypeId"] },
+									$expr: {
+										$eq: ["$_id", "$$postTypeId"],
+									},
 								},
 							},
 							{
@@ -145,45 +132,6 @@ class PostController {
 							},
 						],
 						as: "postType",
-					},
-				},
-				{
-					$lookup: {
-						from: "documents",
-						let: { documentId: "$document" },
-						pipeline: [
-							{
-								$match: {
-									$expr: { $eq: ["$_id", "$$documentId"] },
-								},
-							},
-							{
-								$project: {
-									_id: 1,
-									name: 1,
-									lecturer: 1,
-									durability: 1,
-								},
-							},
-						],
-						as: "document",
-					},
-				},
-				{
-					$lookup: {
-						from: "places",
-						let: { placeId: "$place" },
-						pipeline: [
-							{
-								$match: {
-									$expr: { $eq: ["$_id", "$$placeId"] },
-								},
-							},
-							{
-								$project: { _id: 1, description: 1, time: 1 },
-							},
-						],
-						as: "place",
 					},
 				},
 				// Optionally flatten the arrays if you expect single values

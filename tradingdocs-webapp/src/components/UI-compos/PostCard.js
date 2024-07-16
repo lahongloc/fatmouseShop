@@ -23,6 +23,7 @@ import {
 } from "@mui/icons-material";
 import TextTruncateExpand from "./TextTruncateExpand";
 import PriceDisplay from "./PriceDisplay";
+import { useNavigate } from "react-router-dom";
 
 function formatDate(dateString) {
 	const date = new Date(dateString);
@@ -37,6 +38,7 @@ function formatDate(dateString) {
 	return new Intl.DateTimeFormat("en-US", options).format(date);
 }
 const PostCard = ({ ...props }) => {
+	const navigate = useNavigate();
 	const rootStyle = {
 		width: "30%",
 		margin: "1rem",
@@ -45,6 +47,10 @@ const PostCard = ({ ...props }) => {
 
 	const avatarStyle = {
 		backgroundColor: "#1976d2",
+	};
+
+	const handleViewDetail = () => {
+		navigate(`/post-detail/?postId=${props.postId}`);
 	};
 
 	return (
@@ -77,7 +83,9 @@ const PostCard = ({ ...props }) => {
 				</Typography>
 			</CardContent>
 			<CardMedia
+				onClick={handleViewDetail}
 				sx={{
+					cursor: "pointer",
 					boxShadow:
 						"rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;",
 				}}
@@ -87,10 +95,17 @@ const PostCard = ({ ...props }) => {
 				alt="Random image"
 			/>
 
-			<CardActions disableSpacing>
+			<CardActions
+				// sx={{
+				// 	display: "flex",
+				// 	justifyContent: "space-around",
+				// 	alignItems: "center",
+				// }}
+				disableSpacing
+			>
 				<IconButton
-					sx={{ textTransform: "uppercase" }}
-					aria-label="add to favorites"
+					sx={{ textTransform: "uppercase", fontWeight: 700 }}
+					variant="body1"
 				>
 					<Chip
 						color="primary"
@@ -103,43 +118,10 @@ const PostCard = ({ ...props }) => {
 					{/* {props.des} */}
 				</Typography>
 
-				<IconButton aria-label="comment">
-					{/* {props.isNegotiable && (
-						<Chip
-							icon={<CheckCircleOutlineRoundedIcon />}
-							label="Có thể trao đổi về địa điểm nhận tài liệu"
-							// color="primary"
-						/>
-					)}
-					{props.isNegotiable || (
-						<Chip
-							icon={<HighlightOffRoundedIcon />}
-							label="Không thể trao đổi về địa điểm nhận tài liệu"
-							// color="primary"
-						/>
-					)} */}
-				</IconButton>
-				{/* <IconButton aria-label="share">
-					<ShareIcon />
+				{/* <IconButton aria-label="comment">
+					<Chip label="Chi tiết" />
 				</IconButton> */}
 			</CardActions>
-			{/* <CardContent>
-				<Typography variant="body2" color="textSecondary"></Typography>
-				{props.isNegotiable && (
-					<TextField
-						variant="outlined"
-						margin="normal"
-						fullWidth
-						id="comment"
-						label="Đề xuất địa điểm,.."
-						name="comment"
-					/>
-				)} */}
-
-			{/* <Button variant="contained" color="primary">
-					Đăng ký
-				</Button> */}
-			{/* </CardContent> */}
 		</Card>
 	);
 };

@@ -1,4 +1,4 @@
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import PostCard from "../UI-compos/PostCard";
 import APIs, { endpoints } from "../../configs/APIs";
 import { useEffect, useState } from "react";
@@ -20,6 +20,10 @@ const HomePage = () => {
 		loadPosts();
 	}, []);
 
+	const handleViewDetail = () => {
+		console.log("haha");
+	};
+
 	return (
 		<>
 			<Container sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -27,6 +31,7 @@ const HomePage = () => {
 				{posts.map((post, index) => {
 					return (
 						<PostCard
+							postId={post._id}
 							name={post.user.username}
 							img={post.image}
 							des={post.description}
