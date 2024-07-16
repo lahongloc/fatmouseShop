@@ -17,6 +17,12 @@ const userSchema = new Schema(
 	{ _id: false, timestamps: true },
 );
 
+// userSchema.virtual("posts", {
+// 	ref: "Post",
+// 	localField: "_id",
+// 	foreignField: "userId",
+// });
+
 // userSchema.pre("save", async function (next) {
 // 	if (!this.isModified("password")) return next();
 // 	const salt = await bcrypt.genSalt(10);

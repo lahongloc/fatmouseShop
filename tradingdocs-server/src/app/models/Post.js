@@ -7,25 +7,26 @@ const postSchema = new Schema(
 	{
 		_id: Number,
 		userId: {
-			type: mongoose.Schema.Types.ObjectId,
+			type: mongoose.Types.ObjectId,
 			ref: "User",
 			required: true,
 		},
-		document: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Documentation",
-			required: true,
-		},
 		postType: {
-			type: mongoose.Schema.Types.ObjectId,
+			type: mongoose.Types.ObjectId,
 			ref: "PostType",
 			required: true,
 		},
+		document: {
+			type: mongoose.Types.ObjectId,
+			ref: "Documentation",
+			required: true,
+		},
 		price: { type: Number, required: false },
+		exchangeDocument: { type: String, required: false },
 		image: { type: String, required: false },
 		description: { type: String, required: true },
 		place: {
-			type: mongoose.Schema.Types.ObjectId,
+			type: mongoose.Types.ObjectId,
 			ref: "Place",
 			required: true,
 		},

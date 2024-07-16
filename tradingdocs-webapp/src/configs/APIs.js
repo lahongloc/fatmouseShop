@@ -8,6 +8,10 @@ export const endpoints = {
 	"current-user": "/user/current-user",
 	register: "/user/register",
 	"upload-post": "/post/upload",
+	"upload-test": "/upload-image",
+	"get-posts": "/post/get-posts",
+	"get-categories": "/cate/get-cates",
+	"get-postTypes": "/postType/get-postTypes",
 };
 
 export default axios.create({

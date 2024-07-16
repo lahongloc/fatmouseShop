@@ -8,7 +8,7 @@ const documentationSchema = new Schema(
 		name: { type: String, required: true },
 		durability: { type: Boolean, required: true },
 		category: {
-			type: mongoose.Schema.Types.ObjectId,
+			type: mongoose.Types.ObjectId,
 			ref: "Category",
 			required: true,
 		},

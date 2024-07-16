@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	Grid,
 	TextField,
@@ -14,9 +14,38 @@ import {
 	Card,
 	CardContent,
 	CardMedia,
+	Autocomplete,
 } from "@mui/material";
+import APIs, { endpoints } from "../../configs/APIs";
+import cookie from "react-cookies";
+import TextFieldOption from "../UI-compos/TextFieldOption";
 
 const UploadDocument = () => {
+	const [categories, setCategories] = useState([]);
+	const [postTypes, setPostTypes] = useState([]);
+
+	const loadCategories = async () => {
+		try {
+			const res = await APIs.get(endpoints["get-categories"]);
+			setCategories(res.data);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const loadPostTypes = async () => {
+		try {
+			const res = await APIs.get(endpoints["get-postTypes"]);
+			setPostTypes(res.data);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+	useEffect(() => {
+		loadCategories();
+		loadPostTypes();
+	}, []);
+
 	const img = useRef();
 	const [preview, setPreview] = useState(null);
 	const [formData, setFormData] = useState({
@@ -33,6 +62,12 @@ const UploadDocument = () => {
 		isNegotiable: false,
 		quantity: "",
 	});
+	const recommendations = [
+		"Tài liệu A",
+		"Tài liệu B",
+		"Tài liệu C",
+		"Tài liệu D",
+	];
 
 	const handleChange = (event) => {
 		const { name, value, type, checked } = event.target;
@@ -42,11 +77,23 @@ const UploadDocument = () => {
 		}));
 	};
 
-	const handleSubmit = (event) => {
+	const handleSubmit = async (event) => {
 		event.preventDefault();
+		try {
+			const res = await APIs.post(endpoints["upload-post"], formData, {
+				headers: {
+					Authorization: cookie.load("token"),
+					"Content-Type": "multipart/form-data",
+				},
+			});
+
+			console.log("dđ: ", res.data);
+		} catch (err) {
+			console.error(err);
+		}
 
 		// Handle form submission logic here
-		console.log(formData); // Log the form data
+		// console.log(formData); // Log the form data
 		// You can perform further actions like API calls here
 	};
 
@@ -103,13 +150,38 @@ const UploadDocument = () => {
 								<Grid item xs={9}>
 									<Grid container spacing={2}>
 										<Grid item xs={12} sm={6}>
-											<TextField
+											{/* <TextField
 												label="Tên tài liệu"
 												fullWidth
 												required
 												name="documentName"
 												value={formData.documentName}
 												onChange={handleChange}
+											/> */}
+											<Autocomplete
+												freeSolo
+												options={recommendations}
+												value={formData.documentName}
+												onChange={handleChange}
+												onInputChange={(
+													event,
+													newInputValue,
+												) => {
+													setFormData({
+														...formData,
+														documentName:
+															newInputValue,
+													});
+												}}
+												renderInput={(params) => (
+													<TextField
+														{...params}
+														label="Tên tài liệu"
+														fullWidth
+														required
+														name="documentName"
+													/>
+												)}
 											/>
 										</Grid>
 										<Grid item xs={12} sm={6}>
@@ -138,11 +210,11 @@ const UploadDocument = () => {
 													value={formData.durability}
 													onChange={handleChange}
 												>
-													<MenuItem value="new">
-														New
+													<MenuItem value="true">
+														Mới
 													</MenuItem>
-													<MenuItem value="used">
-														Used
+													<MenuItem value="false">
+														Cũ
 													</MenuItem>
 												</Select>
 											</FormControl>
@@ -162,12 +234,22 @@ const UploadDocument = () => {
 													value={formData.categoryId}
 													onChange={handleChange}
 												>
-													<MenuItem value="original">
-														Original
-													</MenuItem>
-													<MenuItem value="photo">
-														Photo
-													</MenuItem>
+													{categories.map(
+														(category, index) => {
+															return (
+																<MenuItem
+																	value={
+																		category._id
+																	}
+																	key={index}
+																>
+																	{
+																		category.name
+																	}
+																</MenuItem>
+															);
+														},
+													)}
 												</Select>
 											</FormControl>
 										</Grid>
@@ -186,15 +268,27 @@ const UploadDocument = () => {
 													value={formData.postTypeId}
 													onChange={handleChange}
 												>
-													<MenuItem value="sell">
-														Sell
-													</MenuItem>
-													<MenuItem value="exchange">
-														Exchange
-													</MenuItem>
-													<MenuItem value="giveaway">
-														Giveaway
-													</MenuItem>
+													{postTypes.map(
+														(postType, index) => {
+															return (
+																<MenuItem
+																	value={
+																		postType._id
+																	}
+																	key={index}
+																>
+																	{
+																		postType.name
+																	}
+																	(
+																	{
+																		postType.type
+																	}
+																	)
+																</MenuItem>
+															);
+														},
+													)}
 												</Select>
 											</FormControl>
 										</Grid>
