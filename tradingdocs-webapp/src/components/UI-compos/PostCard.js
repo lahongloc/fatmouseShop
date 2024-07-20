@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
 	Card,
 	CardHeader,
@@ -11,6 +11,8 @@ import {
 	TextField,
 	Button,
 	Chip,
+	Menu,
+	MenuItem,
 } from "@mui/material";
 import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
@@ -24,6 +26,7 @@ import {
 import TextTruncateExpand from "./TextTruncateExpand";
 import PriceDisplay from "./PriceDisplay";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../App";
 
 function formatDate(dateString) {
 	const date = new Date(dateString);
@@ -37,8 +40,29 @@ function formatDate(dateString) {
 	};
 	return new Intl.DateTimeFormat("en-US", options).format(date);
 }
+
 const PostCard = ({ ...props }) => {
+	const [user, dispatch] = useContext(UserContext);
+
 	const navigate = useNavigate();
+	const [anchorEl, setAnchorEl] = useState(null);
+
+	const handleMenuClick = (event) => {
+		// console.log()
+		setAnchorEl(event.currentTarget);
+	};
+
+	const handleMenuClose = () => {
+		setAnchorEl(null);
+		const url = `/update-document/?postId=${props.postId}`;
+		window.open(url, "_blank");
+	};
+
+	const handleViewDetail = () => {
+		const url = `/post-detail/?postId=${props.postId}`;
+		window.open(url, "_blank");
+	};
+
 	const rootStyle = {
 		width: "30%",
 		margin: "1rem",
@@ -47,10 +71,6 @@ const PostCard = ({ ...props }) => {
 
 	const avatarStyle = {
 		backgroundColor: "#1976d2",
-	};
-
-	const handleViewDetail = () => {
-		navigate(`/post-detail/?postId=${props.postId}`);
 	};
 
 	return (
@@ -65,13 +85,32 @@ const PostCard = ({ ...props }) => {
 			<CardHeader
 				avatar={
 					<Avatar aria-label="user" style={avatarStyle}>
-						U
+						{props.name[0]}
 					</Avatar>
 				}
 				action={
-					<IconButton aria-label="settings">
-						<MoreVertIcon />
-					</IconButton>
+					user?.user.id == props.ownerId && (
+						<div>
+							<IconButton
+								aria-label="settings"
+								onClick={handleMenuClick}
+							>
+								<MoreVertIcon />
+							</IconButton>
+							<Menu
+								anchorEl={anchorEl}
+								open={Boolean(anchorEl)}
+								onClose={handleMenuClose}
+							>
+								<MenuItem onClick={handleMenuClose}>
+									Chỉnh sửa
+								</MenuItem>
+								<MenuItem onClick={handleMenuClose}>
+									Xóa
+								</MenuItem>
+							</Menu>
+						</div>
+					)
 				}
 				title={props.name}
 				subheader={formatDate(props.time)}
@@ -79,7 +118,6 @@ const PostCard = ({ ...props }) => {
 			<CardContent sx={{ marginTop: -2 }}>
 				<Typography variant="body1" color="textPrimary">
 					<TextTruncateExpand text={props.des} />
-					{/* {props.des} */}
 				</Typography>
 			</CardContent>
 			<CardMedia
@@ -94,15 +132,7 @@ const PostCard = ({ ...props }) => {
 				image={props.img}
 				alt="Random image"
 			/>
-
-			<CardActions
-				// sx={{
-				// 	display: "flex",
-				// 	justifyContent: "space-around",
-				// 	alignItems: "center",
-				// }}
-				disableSpacing
-			>
+			<CardActions disableSpacing>
 				<IconButton
 					sx={{ textTransform: "uppercase", fontWeight: 700 }}
 					variant="body1"
@@ -115,12 +145,7 @@ const PostCard = ({ ...props }) => {
 				</IconButton>
 				<Typography variant="body1" color="textPrimary">
 					<PriceDisplay price={props.price} />
-					{/* {props.des} */}
 				</Typography>
-
-				{/* <IconButton aria-label="comment">
-					<Chip label="Chi tiết" />
-				</IconButton> */}
 			</CardActions>
 		</Card>
 	);

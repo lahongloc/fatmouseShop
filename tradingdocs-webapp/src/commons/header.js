@@ -23,20 +23,6 @@ import { isNormalUser } from "../authorizations/roleAuths";
 function Header() {
 	const [user, dispatch] = React.useContext(UserContext);
 
-	React.useEffect(() => {
-		console.log("userrr: ", user);
-	});
-	// const pages = ["Trang chủ", "Workspace", "Đề cương của tôi"];
-	const pages = [
-		{
-			name: "Workspaces",
-			link: "/my-workspace",
-		},
-		{
-			name: "Đề cương của tôi",
-			link: "/my-outlines",
-		},
-	];
 	const nav = useNavigate();
 	const settings = [
 		{
@@ -128,37 +114,6 @@ function Header() {
 							>
 								Đăng tài liệu
 							</Button>
-							{/* )} */}
-							{/* {isLecturer(user) &&
-								pages.map((page, index) => (
-									<Button
-										key={index}
-										onClick={() => {
-											nav(page.link);
-										}}
-										sx={{
-											my: 2,
-											color: "white",
-											display: "block",
-										}}
-									>
-										{page.name}
-									</Button>
-								))}
-							{isStudent(user) && ( */}
-							{/* <Button
-									onClick={() => {
-										nav("/downloaded-outlines");
-									}}
-									sx={{
-										my: 2,
-										color: "white",
-										display: "block",
-									}}
-								>
-									Đề cương đã tải
-								</Button>
-							)} */}
 						</Box>
 
 						{user ? (
@@ -169,13 +124,10 @@ function Header() {
 										sx={{ p: 0 }}
 									>
 										<AvatarChip
-											avatar={user.user.image}
+											avatar={user.user.username}
 											name={user.user.username}
+											alt={user.user.username}
 										/>
-										{/* <Avatar
-										alt="Remy Sharp"
-										src={user.avatar}
-									/> */}
 									</IconButton>
 								</Tooltip>
 								<Menu
@@ -209,18 +161,6 @@ function Header() {
 											</Typography>
 										</MenuItem>
 									))}
-									{/* {isStudent(user) && (
-										<MenuItem
-											onClick={() => {
-												handleCloseUserMenu();
-												nav("/");
-											}}
-										>
-											<Typography textAlign="center">
-												Đề cương đã tải
-											</Typography>
-										</MenuItem>
-									)} */}
 								</Menu>
 							</Box>
 						) : (

@@ -24,8 +24,6 @@ const DocumentDetail = () => {
 	};
 
 	useEffect(() => {
-		console.log("herr: ");
-		console.log("jjbcjbc: ", q.get("postId"));
 		loadDocumentDetail();
 	}, []);
 

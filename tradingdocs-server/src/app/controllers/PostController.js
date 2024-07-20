@@ -4,7 +4,7 @@ const Category = require("../models/Category");
 const Post = require("../models/Post");
 const PostType = require("../models/PostType");
 const uploadImage = require("../../config/clouds/cloudinary/uploadImage");
-
+const ObjectId = require("mongodb").ObjectId;
 class PostController {
 	// [POST] /post/upload
 	createPost(req, res, next) {
@@ -15,7 +15,7 @@ class PostController {
 			durability,
 			categoryId,
 			postTypeId,
-			price,
+			price = 0,
 			description,
 			exchangeDocument,
 			place,
@@ -96,7 +96,7 @@ class PostController {
 			const postId = req.query.postId ? Number(req.query.postId) : null;
 
 			const match = postId ? { $match: { _id: postId } } : { $match: {} };
-			const posts = await Post.aggregate([
+			let posts = await Post.aggregate([
 				match,
 				{
 					$lookup: {
@@ -134,6 +134,25 @@ class PostController {
 						as: "postType",
 					},
 				},
+				{
+					$lookup: {
+						from: "categories",
+						let: { categoryId: "$category" },
+						pipeline: [
+							{
+								$match: {
+									$expr: {
+										$eq: ["$_id", "$$categoryId"],
+									},
+								},
+							},
+							{
+								$project: { _id: 1, name: 1 },
+							},
+						],
+						as: "category",
+					},
+				},
 				// Optionally flatten the arrays if you expect single values
 				{
 					$unwind: {
@@ -149,15 +168,12 @@ class PostController {
 				},
 				{
 					$unwind: {
-						path: "$document",
+						path: "$category",
 						preserveNullAndEmptyArrays: true,
 					},
 				},
 				{
-					$unwind: {
-						path: "$place",
-						preserveNullAndEmptyArrays: true,
-					},
+					$sort: { _id: -1 }, // Sort by _id in descending order
 				},
 			]);
 
@@ -166,6 +182,71 @@ class PostController {
 			console.error(err);
 			res.status(500).json({ error: "Internal server error" });
 		}
+	}
+
+	// [PUT] /post/update-post/:id
+	async updatePost(req, res, next) {
+		console.log("data can cap nha la: ", req.body);
+		// res.json(200);
+
+		const category = req.body.category ?? null;
+		const postType = req.body.postType ?? null;
+
+		try {
+			const cate = await Category.findById(category);
+			if (!cate) return res.status(400).send("Invalid Category");
+
+			const post = await Post.findById(req.params.id);
+			post.category = cate;
+			post.save();
+			res.json(post);
+
+			// post.category = cate;
+		} catch (err) {
+			console.error(err);
+			res.json({ msg: 400, err: err });
+		}
+
+		// const post = await Post.findByIdAndUpdate(
+		// 	req.params.id,
+		// 	{
+		// 		category: new ObjectId(cate._id),
+		// 	},
+		// 	{
+		// 		new: true,
+		// 	},
+		// );
+
+		// if (!post) return res.status(500).send("Post cannot be updated");
+		// res.send(post);
+
+		// res.json(200);
+
+		// if (category) {
+		// 	Category.findById(category)
+		// 		.then((cate) => {
+		// 			Post.findByIdAndUpdate(req.params.id, { category: cate })
+		// 				.then(() => res.json(200))
+		// 				.catch(() => res.json(400));
+		// 		})
+		// 		.catch(() => res.json("cannot find category"));
+		// }
+
+		// if (category) {
+		// 	Category.findById(category)
+		// 		.then((cate) => {
+		// 			res.json(cate);
+		// 			// Post.updateOne({ _id: req.params.id }, { category: cate })
+		// 			// 	.then(() => res.json({ cate: cate }))
+		// 			// 	.catch(() => res.json({ msg: 400 }));
+		// 		})
+		// 		.catch(next);
+		// }
+
+		// Post.updateOne({ _id: req.params.id }, req.body)
+		// 	.then(() => res.json({ status: 200, changed: req.body }))
+		// 	.catch(() => res.json({ status: 400 }));
+		// res.json({ msg: "thanh cong!", id: req.params.id, datala: req.body });
 	}
 }
 module.exports = new PostController();

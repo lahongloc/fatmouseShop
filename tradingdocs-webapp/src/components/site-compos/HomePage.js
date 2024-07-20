@@ -39,6 +39,7 @@ const HomePage = () => {
 							postType={post.postType.name}
 							isNegotiable={post.isNegotiable}
 							price={post.price}
+							ownerId={post.user._id}
 						/>
 					);
 				})}

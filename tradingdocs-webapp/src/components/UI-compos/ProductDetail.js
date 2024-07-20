@@ -26,6 +26,10 @@ const CustomChip = styled(Chip)(({ theme }) => ({
 	marginBottom: theme.spacing(1),
 }));
 
+const avatarStyle = {
+	backgroundColor: "#1976d2",
+};
+
 const ProductDetail = ({ product }) => {
 	const [purchaseQuantity, setPurchaseQuantity] = useState(1);
 	const [error, setError] = useState("");
@@ -45,7 +49,7 @@ const ProductDetail = ({ product }) => {
 	return (
 		<Container maxWidth="lg" sx={{ marginTop: 14 }}>
 			<Paper elevation={3} sx={{ padding: 4 }}>
-				<Grid container spacing={2}>
+				<Grid container spacing={10}>
 					<Grid item xs={12} md={6}>
 						<Box sx={{ textAlign: "center" }}>
 							<Avatar
@@ -79,6 +83,7 @@ const ProductDetail = ({ product }) => {
 							}}
 						>
 							<Avatar
+								style={avatarStyle}
 								src="/path/to/default-avatar.jpg"
 								alt={product.user.username}
 								sx={{ marginRight: 2 }}
@@ -142,9 +147,13 @@ const ProductDetail = ({ product }) => {
 								Giá:
 							</Typography>
 							<PriceChip
-								label={`₫${product.price.toLocaleString(
-									"vi-VN",
-								)}`}
+								label={
+									product.price
+										? `₫${product.price.toLocaleString(
+												"vi-VN",
+										  )}`
+										: `₫${"0".toLocaleString("vi-VN")}`
+								}
 							/>
 						</Box>
 

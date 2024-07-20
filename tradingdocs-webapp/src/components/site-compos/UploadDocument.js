@@ -357,7 +357,7 @@ const UploadDocument = () => {
 												color="primary"
 												fullWidth
 											>
-												Post
+												Đăng tài liệu
 											</Button>
 										</Grid>
 									</Grid>

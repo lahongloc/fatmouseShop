@@ -12,6 +12,7 @@ export const endpoints = {
 	"get-posts": "/post/get-posts",
 	"get-categories": "/cate/get-cates",
 	"get-postTypes": "/postType/get-postTypes",
+	"update-post": "/post/update-post",
 };
 
 export default axios.create({

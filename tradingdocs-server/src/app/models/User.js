@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
 	{
-		_id: Number,
+		// _id: Number,
 		fullName: { type: String, required: true },
 		gender: { type: Boolean, required: true },
 		username: { type: String, required: true, unique: true },
@@ -14,7 +14,8 @@ const userSchema = new Schema(
 		role: { type: String, required: true, default: "NORMAL_USER" },
 		status: { type: Boolean, default: true },
 	},
-	{ _id: false, timestamps: true },
+	{ timestamps: true },
+	// { _id: false, timestamps: true },
 );
 
 // userSchema.virtual("posts", {
@@ -30,6 +31,6 @@ const userSchema = new Schema(
 // 	next();
 // });
 
-userSchema.plugin(AutoIncrement, { id: "user_seq", inc_field: "_id" });
+// userSchema.plugin(AutoIncrement, { id: "user_seq", inc_field: "_id" });
 
 module.exports = mongoose.model("User", userSchema);

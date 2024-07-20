@@ -11,8 +11,35 @@ import UploadDocument from "./components/site-compos/UploadDocument";
 import UploadForm from "./components/site-compos/UpImage";
 import HomePage from "./components/site-compos/HomePage";
 import DocumentDetail from "./components/site-compos/DocumentDetail";
+import UpdateDocument from "./components/site-compos/UpdateDocument";
 
 export const UserContext = createContext();
+
+const orderData = {
+	_id: 27,
+	documentName: "Hack não tiếng anh",
+	durability: false,
+	lecturer: "Tô Oai Hùng",
+	category: 1,
+	userId: 3,
+	postType: {
+		_id: 4,
+		name: "Bán",
+	},
+	price: 300000,
+	image: "https://res.cloudinary.com/dbfh15hki/image/upload/f_auto,q_auto/3Tue%20Jul%2016%202024%2023:22:53%20GMT%2B0700%20(Indochina%20Time)?_a=BAMADKTE0",
+	description: "Mình mua 500k, pass lại 300k cho bạn nào cần 🥰",
+	place: "A201 OU Võ Văn Tần",
+	quantity: 0,
+	createdAt: "2024-07-16T16:22:55.779Z",
+	updatedAt: "2024-07-16T16:22:55.779Z",
+	__v: 0,
+	user: {
+		_id: 3,
+		username: "KimBang",
+		role: "NORMAL_USER",
+	},
+};
 
 function App() {
 	const [user, dispatch] = useReducer(
@@ -44,12 +71,18 @@ function App() {
 						/>
 					)}
 					{isNormalUser(user) && (
-						<Route
-							path="/upload-documents"
-							element={<UploadDocument />}
-						/>
+						<>
+							<Route
+								path="/upload-documents"
+								element={<UploadDocument />}
+							/>
+							<Route
+								path="/update-document"
+								element={<UpdateDocument />}
+							/>
+						</>
 					)}
-					<Route path="/up" element={<UploadForm />} />
+					<Route path="/up" element={<UploadForm {...orderData} />} />
 					<Route path="/sign-in" element={<SignIn />} />
 					<Route path="/sign-up" element={<SignUp />} />
 					<Route path="/" element={<HomePage />} />

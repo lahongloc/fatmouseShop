@@ -79,7 +79,7 @@ export default function SignIn() {
 				const next = q.get("next");
 				if (next) {
 					navigate(`/${next}`);
-				}
+				} else navigate("/");
 			} catch (err) {
 				setSuccess(false);
 				console.error(err);

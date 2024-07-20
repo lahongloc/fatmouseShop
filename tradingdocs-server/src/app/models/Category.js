@@ -4,14 +4,14 @@ const Schema = mongoose.Schema;
 
 const categorySchema = new Schema(
 	{
-		_id: Number,
+		// _id: { type: Number, required: true },
 		type: { type: String, required: true },
 		name: { type: String, required: true },
 		description: { type: String, required: true },
 	},
-	{ _id: false },
+	// { _id: false },
 );
 
-categorySchema.plugin(AutoIncrement, { id: "category_seq", inc_field: "_id" });
+// categorySchema.plugin(AutoIncrement, { id: "category_seq", inc_field: "_id" });
 
 module.exports = mongoose.model("Category", categorySchema);
