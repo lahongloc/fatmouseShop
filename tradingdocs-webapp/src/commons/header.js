@@ -123,6 +123,12 @@ function Header() {
 										onClick={handleOpenUserMenu}
 										sx={{ p: 0 }}
 									>
+										{/* <Avatar
+											// style={avatarStyle}
+											src="/path/to/default-avatar.jpg"
+											alt={user.user.username}
+											sx={{ marginRight: 2 }}
+										/> */}
 										<AvatarChip
 											avatar={user.user.username}
 											name={user.user.username}

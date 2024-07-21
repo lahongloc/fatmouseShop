@@ -7,7 +7,7 @@ export default function AvatarChip({ avatar, name }) {
 	return (
 		<Stack direction="row" spacing={1}>
 			<Chip
-				avatar={<Avatar alt="Natacha" src={avatar} />}
+				avatar={<Avatar alt={name} src={avatar} />}
 				sx={{ color: "#fff", height: 40 }}
 				label={name}
 				variant="primary"

@@ -15,14 +15,22 @@ import {
 	CardContent,
 	CardMedia,
 	Autocomplete,
+	Alert,
 } from "@mui/material";
 import APIs, { endpoints } from "../../configs/APIs";
 import cookie from "react-cookies";
 import TextFieldOption from "../UI-compos/TextFieldOption";
+import LinearBuffer from "../UI-compos/LinearBuffer";
+import { useNavigate } from "react-router-dom";
 
 const UploadDocument = () => {
 	const [categories, setCategories] = useState([]);
 	const [postTypes, setPostTypes] = useState([]);
+
+	const [loading, setLoading] = useState(false);
+	const [success, setSuccess] = useState(true);
+
+	const navigate = useNavigate();
 
 	const loadCategories = async () => {
 		try {
@@ -61,12 +69,6 @@ const UploadDocument = () => {
 		// isNegotiable: false,
 		quantity: "",
 	});
-	const recommendations = [
-		"Tài liệu A",
-		"Tài liệu B",
-		"Tài liệu C",
-		"Tài liệu D",
-	];
 
 	const handleChange = (event) => {
 		const { name, value, type, checked } = event.target;
@@ -79,6 +81,7 @@ const UploadDocument = () => {
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+		setLoading(true);
 		try {
 			const res = await APIs.post(endpoints["upload-post"], formData, {
 				headers: {
@@ -86,10 +89,16 @@ const UploadDocument = () => {
 					"Content-Type": "multipart/form-data",
 				},
 			});
-
-			console.log("dđ: ", res.data);
+			setSuccess(true);
+			navigate(`/`);
 		} catch (err) {
+			setSuccess(false);
 			console.error(err);
+		} finally {
+			setLoading(false);
+			setTimeout(() => {
+				setSuccess(true);
+			}, 5000);
 		}
 
 		// Handle form submission logic here
@@ -104,6 +113,7 @@ const UploadDocument = () => {
 			style={{ width: "60%", height: "80%", margin: "auto" }}
 		>
 			<Grid item xs={12}>
+				{loading && <LinearBuffer />}
 				<Card variant="outlined">
 					<CardContent>
 						<Typography variant="h6" gutterBottom>
@@ -160,7 +170,7 @@ const UploadDocument = () => {
 											/> */}
 											<Autocomplete
 												freeSolo
-												options={recommendations}
+												options={[]}
 												value={formData.documentName}
 												onChange={handleChange}
 												onInputChange={(
@@ -314,7 +324,7 @@ const UploadDocument = () => {
 												onChange={handleChange}
 											/>
 										</Grid>
-										<Grid item xs={12}>
+										<Grid item xs={12} sm={6}>
 											<TextField
 												label="Địa điểm hẹn lấy"
 												variant="outlined"
@@ -325,20 +335,7 @@ const UploadDocument = () => {
 												onChange={handleChange}
 											/>
 										</Grid>
-										{/* <Grid item xs={12} sm={6}>
-											<FormControlLabel
-												control={
-													<Checkbox
-														name="isNegotiable"
-														checked={
-															formData.isNegotiable
-														}
-														onChange={handleChange}
-													/>
-												}
-												label="Khách hàng có thể đề nghị địa điểm và thời gian lấy sản phẩm khác không?"
-											/>
-										</Grid> */}
+
 										<Grid item xs={12} sm={6}>
 											<TextField
 												label="Số lượng"
@@ -351,10 +348,31 @@ const UploadDocument = () => {
 											/>
 										</Grid>
 										<Grid item xs={12}>
+											{success || (
+												<Alert
+													className="animate__animated animate__wobble"
+													severity="warning"
+												>
+													Đã có lỗi xảy ra, vui lòng
+													đăng nhập và thử lại, hoặc
+													báo cáo với ADMIN{" "}
+													<span
+														style={{
+															color: "red",
+															cursor: "pointer",
+														}}
+													>
+														tại đây.
+													</span>
+												</Alert>
+											)}
+										</Grid>
+										<Grid item xs={12}>
 											<Button
 												type="submit"
 												variant="contained"
 												color="primary"
+												disabled={loading}
 												fullWidth
 											>
 												Đăng tài liệu

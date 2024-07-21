@@ -12,10 +12,12 @@ import {
 	CardContent,
 	CardMedia,
 	Autocomplete,
+	Alert,
 } from "@mui/material";
 import APIs, { endpoints } from "../../configs/APIs";
 import cookie from "react-cookies";
 import { useSearchParams } from "react-router-dom";
+import LinearBuffer from "../UI-compos/LinearBuffer";
 
 const UpdateDocument = ({ match }) => {
 	const [categories, setCategories] = useState([]);
@@ -25,6 +27,12 @@ const UpdateDocument = ({ match }) => {
 	const [originalImage, setOriginalImage] = useState(null); // State for original image
 	const [sucess, setSucess] = useState(false);
 	const [q] = useSearchParams();
+
+	const [loading, setLoading] = useState(false);
+	const [message, setMessage] = useState({
+		success: false,
+		error: false,
+	});
 
 	const loadCategories = async () => {
 		try {
@@ -137,14 +145,35 @@ const UpdateDocument = ({ match }) => {
 		}
 
 		try {
+			setLoading(true);
 			const res = await APIs.put(
 				`${endpoints["update-post"]}/${q.get("postId")}`,
 				changedData,
+				{
+					headers: {
+						Authorization: cookie.load("token"),
+						"Content-Type": "multipart/form-data",
+					},
+				},
 			);
 
-			console.log(res.data);
+			setMessage((prev) => {
+				return { error: false, success: true };
+			});
+			loadDocument();
 		} catch (err) {
+			setMessage((prev) => {
+				return { success: false, error: true };
+			});
 			console.error(err);
+		} finally {
+			setLoading(false);
+			setTimeout(() => {
+				setMessage({
+					success: false,
+					error: false,
+				});
+			}, 5000);
 		}
 		// console.log(changedData);
 	};
@@ -204,6 +233,7 @@ const UpdateDocument = ({ match }) => {
 					style={{ width: "60%", height: "80%", margin: "auto" }}
 				>
 					<Grid item xs={12}>
+						{loading && <LinearBuffer />}
 						<Card variant="outlined">
 							<CardContent>
 								<Typography variant="h6" gutterBottom>
@@ -463,7 +493,7 @@ const UpdateDocument = ({ match }) => {
 												</Grid>
 												<Grid item xs={12} sm={6}>
 													<TextField
-														label="Nơi bán"
+														label="Địa điểm hẹn lấy"
 														variant="outlined"
 														fullWidth
 														name="place"
@@ -483,6 +513,35 @@ const UpdateDocument = ({ match }) => {
 														}
 														onChange={handleChange}
 													/>
+												</Grid>
+												<Grid item xs={12}>
+													{message.success && (
+														<Alert
+															className="animate__animated animate__tada"
+															severity="success"
+														>
+															Cập nhật thành công!
+														</Alert>
+													)}
+													{message.error && (
+														<Alert
+															className="animate__animated animate__wobble"
+															severity="error"
+														>
+															Đã có lỗi xảy ra,
+															vui lòng đăng nhập
+															và thử lại, hoặc báo
+															cáo với ADMIN{" "}
+															<span
+																style={{
+																	color: "red",
+																	cursor: "pointer",
+																}}
+															>
+																tại đây.
+															</span>
+														</Alert>
+													)}
 												</Grid>
 												<Grid item xs={12}>
 													<Button

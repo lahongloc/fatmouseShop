@@ -186,67 +186,40 @@ class PostController {
 
 	// [PUT] /post/update-post/:id
 	async updatePost(req, res, next) {
-		console.log("data can cap nha la: ", req.body);
-		// res.json(200);
+		const categoryId = req.body.category ?? null;
+		const postTypeId = req.body.postType ?? null;
 
-		const category = req.body.category ?? null;
-		const postType = req.body.postType ?? null;
-
-		try {
-			const cate = await Category.findById(category);
-			if (!cate) return res.status(400).send("Invalid Category");
-
-			const post = await Post.findById(req.params.id);
-			post.category = cate;
-			post.save();
-			res.json(post);
-
-			// post.category = cate;
-		} catch (err) {
-			console.error(err);
-			res.json({ msg: 400, err: err });
+		if (categoryId) {
+			const category = await Category.findById(categoryId);
+			if (category) {
+				req.body.category = category;
+			}
 		}
 
-		// const post = await Post.findByIdAndUpdate(
-		// 	req.params.id,
-		// 	{
-		// 		category: new ObjectId(cate._id),
-		// 	},
-		// 	{
-		// 		new: true,
-		// 	},
-		// );
+		if (postTypeId) {
+			const postType = await PostType.findById(postTypeId);
+			if (postType) {
+				req.body.postType = postType;
+			}
+		}
 
-		// if (!post) return res.status(500).send("Post cannot be updated");
-		// res.send(post);
+		const image = req.body.image;
+		if (image) {
+			const result = await uploadImage(
+				image,
+				`${req.params.id + new Date().toString()}`,
+			);
 
-		// res.json(200);
+			if (result) {
+				req.body.image = result.optimizeUrl;
+			}
+		}
 
-		// if (category) {
-		// 	Category.findById(category)
-		// 		.then((cate) => {
-		// 			Post.findByIdAndUpdate(req.params.id, { category: cate })
-		// 				.then(() => res.json(200))
-		// 				.catch(() => res.json(400));
-		// 		})
-		// 		.catch(() => res.json("cannot find category"));
-		// }
-
-		// if (category) {
-		// 	Category.findById(category)
-		// 		.then((cate) => {
-		// 			res.json(cate);
-		// 			// Post.updateOne({ _id: req.params.id }, { category: cate })
-		// 			// 	.then(() => res.json({ cate: cate }))
-		// 			// 	.catch(() => res.json({ msg: 400 }));
-		// 		})
-		// 		.catch(next);
-		// }
-
-		// Post.updateOne({ _id: req.params.id }, req.body)
-		// 	.then(() => res.json({ status: 200, changed: req.body }))
-		// 	.catch(() => res.json({ status: 400 }));
-		// res.json({ msg: "thanh cong!", id: req.params.id, datala: req.body });
+		Post.updateOne({ _id: req.params.id }, req.body)
+			.then(() => res.status(200).send("Update sucessfully"))
+			.catch((err) => {
+				res.status(400).send({ msg: err });
+			});
 	}
 }
 module.exports = new PostController();

@@ -11,7 +11,12 @@ router.post(
 	upload.single("image"),
 	postController.createPost,
 );
-router.put("/update-post/:id", postController.updatePost);
+router.put(
+	"/update-post/:id",
+	authenticateToken,
+	upload.single("image"),
+	postController.updatePost,
+);
 router.get("/get-posts", postController.getPosts);
 
 module.exports = router;
