@@ -59,6 +59,7 @@ const UpdateDocument = ({ match }) => {
 				`${endpoints["get-posts"]}?postId=${q.get("postId")}`,
 			);
 			const doc = res.data[0];
+			doc.price = doc.price ?? 0;
 			setDocument(doc);
 			setInitialData(doc);
 			setOriginalImage(doc.image); // Set original image URL
@@ -104,13 +105,6 @@ const UpdateDocument = ({ match }) => {
 			});
 		}
 	}, [document]);
-
-	const recommendations = [
-		"Tài liệu A",
-		"Tài liệu B",
-		"Tài liệu C",
-		"Tài liệu D",
-	];
 
 	const handleChange = (event) => {
 		const { name, value } = event.target;
@@ -306,9 +300,7 @@ const UpdateDocument = ({ match }) => {
 												<Grid item xs={12} sm={6}>
 													<Autocomplete
 														freeSolo
-														options={
-															recommendations
-														}
+														options={[]}
 														value={
 															formData.documentName
 														}
