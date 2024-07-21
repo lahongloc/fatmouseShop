@@ -40,6 +40,8 @@ const HomePage = () => {
 							isNegotiable={post.isNegotiable}
 							price={post.price}
 							ownerId={post.user._id}
+							documentName={post.documentName}
+							quantity={post.quantity}
 						/>
 					);
 				})}

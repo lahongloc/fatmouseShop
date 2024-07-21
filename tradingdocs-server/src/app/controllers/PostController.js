@@ -4,6 +4,7 @@ const Category = require("../models/Category");
 const Post = require("../models/Post");
 const PostType = require("../models/PostType");
 const uploadImage = require("../../config/clouds/cloudinary/uploadImage");
+const { Exception } = require("sass");
 const ObjectId = require("mongodb").ObjectId;
 class PostController {
 	// [POST] /post/upload
@@ -91,9 +92,10 @@ class PostController {
 
 	// [GET] /post/get-posts
 	async getPosts(req, res, next) {
-		console.log("hahaha: ", req.query.postId);
 		try {
-			const postId = req.query.postId ? Number(req.query.postId) : null;
+			const postId = req.query.postId
+				? new ObjectId(req.query.postId)
+				: null;
 
 			const match = postId ? { $match: { _id: postId } } : { $match: {} };
 			let posts = await Post.aggregate([
@@ -147,7 +149,7 @@ class PostController {
 								},
 							},
 							{
-								$project: { _id: 1, name: 1 },
+								$project: { _id: 1, name: 1, description: 1 },
 							},
 						],
 						as: "category",
@@ -177,6 +179,8 @@ class PostController {
 				},
 			]);
 
+			// console.log("type laaa: ", typeof posts[0]._id);
+
 			res.json(posts);
 		} catch (err) {
 			console.error(err);
@@ -186,6 +190,8 @@ class PostController {
 
 	// [PUT] /post/update-post/:id
 	async updatePost(req, res, next) {
+		// res.json(req.user);
+		console.log("userrrr", req.user);
 		const categoryId = req.body.category ?? null;
 		const postTypeId = req.body.postType ?? null;
 
@@ -214,9 +220,18 @@ class PostController {
 				req.body.image = result.optimizeUrl;
 			}
 		}
+		const user = await User.findById(req.user.user.id);
 
-		Post.updateOne({ _id: req.params.id }, req.body)
-			.then(() => res.status(200).send("Update sucessfully"))
+		Post.findOneAndUpdate({ _id: req.params.id, userId: user }, req.body, {
+			new: true,
+		})
+			.then((post) => {
+				if (!post)
+					return res.status(404).send({
+						msg: "Post not found or you are not authorized to update this post",
+					});
+				res.status(200).send("Update sucessfully");
+			})
 			.catch((err) => {
 				res.status(400).send({ msg: err });
 			});

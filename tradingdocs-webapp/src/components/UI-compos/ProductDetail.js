@@ -9,6 +9,8 @@ import {
 	Box,
 	TextField,
 	Button,
+	Tooltip,
+	Alert,
 } from "@mui/material";
 import { styled } from "@mui/system";
 
@@ -105,31 +107,44 @@ const ProductDetail = ({ product }) => {
 								</Typography>
 							</Typography>
 						</Box>
-
-						<Typography variant="h4">
+						<Typography
+							sx={{ textTransform: "uppercase", fontWeight: 700 }}
+							variant="h4"
+							gutterBottom
+						>
 							{product.documentName}{" "}
+						</Typography>
+						<Typography
+							sx={{ marginBottom: 2 }}
+							variant="body1"
+							color="textSecondary"
+							gutterBottom
+						>
+							<Alert icon={false} severity="info">
+								{product.description}
+							</Alert>
+						</Typography>
+
+						<Typography variant="body1">
 							<CustomChip
-								// variant="outlined"
 								label={`Loại giao dịch: ${product.postType.name}`}
-								// color="primary"
 							/>
 							<CustomChip
-								// variant="outlined"
 								label={`Độ bền: ${
 									product.durability
 										? "Còn mới"
 										: "Đã sử dụng"
 								}`}
-								// color="secondary"
 							/>
+							<Tooltip title={product.category.description}>
+								<CustomChip
+									label={`Loại tài liệu: ${product.category.name}`}
+								/>
+							</Tooltip>
 						</Typography>
 
-						<Typography
-							variant="body1"
-							color="textSecondary"
-							gutterBottom
-						>
-							{product.description}
+						<Typography variant="body1" gutterBottom>
+							Giảng viên: {product.lecturer}
 						</Typography>
 
 						<Typography variant="body1" gutterBottom>

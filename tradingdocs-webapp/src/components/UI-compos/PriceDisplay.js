@@ -19,9 +19,7 @@ const PriceDisplay = ({ price }) => {
 	return (
 		<Typography component="div">
 			<Chip
-				color="success"
 				variant="outlined"
-				icon={<MonetizationOnOutlinedIcon />}
 				label={<span style={priceStyle}>Giá: {formattedPrice}</span>}
 			/>
 		</Typography>

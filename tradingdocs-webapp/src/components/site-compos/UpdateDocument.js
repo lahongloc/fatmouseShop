@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
 	Grid,
 	TextField,
@@ -18,8 +18,12 @@ import APIs, { endpoints } from "../../configs/APIs";
 import cookie from "react-cookies";
 import { useSearchParams } from "react-router-dom";
 import LinearBuffer from "../UI-compos/LinearBuffer";
+import { UserContext } from "../../App";
+import NotFoundPage from "../UI-compos/NotFoundPage ";
 
 const UpdateDocument = ({ match }) => {
+	const [user, dispatch] = useContext(UserContext);
+
 	const [categories, setCategories] = useState([]);
 	const [postTypes, setPostTypes] = useState([]);
 	const [document, setDocument] = useState(null);
@@ -217,6 +221,19 @@ const UpdateDocument = ({ match }) => {
 		}
 		return false;
 	};
+
+	useEffect(() => {
+		console.log("user dang nhap: ", user.user.id);
+		console.log("user cua doc:", document?.user._id);
+	});
+
+	if (user.user.id !== document?.user._id) {
+		return (
+			<>
+				<NotFoundPage />
+			</>
+		);
+	}
 
 	return (
 		<>

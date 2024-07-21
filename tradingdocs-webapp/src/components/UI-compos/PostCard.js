@@ -27,6 +27,7 @@ import TextTruncateExpand from "./TextTruncateExpand";
 import PriceDisplay from "./PriceDisplay";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../App";
+import IntroDivider from "./IntroDivider";
 
 function formatDate(dateString) {
 	const date = new Date(dateString);
@@ -124,15 +125,23 @@ const PostCard = ({ ...props }) => {
 				onClick={handleViewDetail}
 				sx={{
 					cursor: "pointer",
-					boxShadow:
-						"rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;",
+					borderTop: "1px solid rgba(27, 31, 35, 0.15)",
+					// boxShadow:
+					// 	"rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;",
 				}}
 				component="img"
 				height="300"
 				image={props.img}
 				alt="Random image"
 			/>
-			<CardActions disableSpacing>
+			<IntroDivider
+				des={props.des}
+				price={props.price}
+				documentName={props.documentName}
+				postType={props.postType}
+				quantity={props.quantity}
+			/>
+			{/* <CardActions disableSpacing>
 				<IconButton
 					sx={{ textTransform: "uppercase", fontWeight: 700 }}
 					variant="body1"
@@ -146,7 +155,7 @@ const PostCard = ({ ...props }) => {
 				<Typography variant="body1" color="textPrimary">
 					<PriceDisplay price={props.price} />
 				</Typography>
-			</CardActions>
+			</CardActions> */}
 		</Card>
 	);
 };

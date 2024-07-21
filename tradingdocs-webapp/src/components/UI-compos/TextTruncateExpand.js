@@ -14,15 +14,23 @@ const TextTruncateExpand = ({ text }) => {
 			<Typography>
 				{isExpanded
 					? text
-					: text.length > 35
-					? `${text.substring(0, 35)}...`
+					: text.length > 28
+					? `${text.substring(0, 28)}...`
 					: text}
+				{text.length > 28 && (
+					<span
+						style={{ color: "blue", cursor: "pointer" }}
+						onClick={handleToggle}
+					>
+						{isExpanded ? "Rút gọn" : "Xem thêm"}
+					</span>
+				)}
 			</Typography>
-			{text.length > 35 && (
+			{/* {text.length > 30 && (
 				<Button onClick={handleToggle}>
-					{isExpanded ? "Rút gọn" : "Hiển thị đầy đủ"}
+					{isExpanded ? "Rút gọn" : "Xem thêm"}
 				</Button>
-			)}
+			)} */}
 		</div>
 	);
 };
