@@ -1,439 +1,236 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import {
-	Grid,
-	TextField,
-	Select,
-	MenuItem,
-	FormControl,
-	InputLabel,
-	Button,
+	Container,
 	Typography,
+	Grid,
+	Paper,
+	Box,
+	Divider,
+	Avatar,
 	Card,
 	CardContent,
 	CardMedia,
-	Autocomplete,
+	Breadcrumbs,
+	Chip,
 } from "@mui/material";
-import APIs, { endpoints } from "../../configs/APIs";
-import cookie from "react-cookies";
+import { blue, green, red } from "@mui/material/colors";
+import CustomizedBreadcrumbs from "../UI-compos/CustomizedBreadcrumbs";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 
-const UpImage = ({ match }) => {
-	const [categories, setCategories] = useState([]);
-	const [postTypes, setPostTypes] = useState([]);
-	const [document, setDocument] = useState(null);
-	const [initialData, setInitialData] = useState(null);
-	const [originalImage, setOriginalImage] = useState(null); // State for original image
-
-	const loadCategories = async () => {
-		try {
-			const res = await APIs.get(endpoints["get-categories"]);
-			setCategories(res.data);
-		} catch (err) {
-			console.error(err);
-		}
-	};
-
-	const loadPostTypes = async () => {
-		try {
-			const res = await APIs.get(endpoints["get-postTypes"]);
-			setPostTypes(res.data);
-		} catch (err) {
-			console.error(err);
-		}
-	};
-
-	const loadDocument = async () => {
-		try {
-			const res = await APIs.get(`${endpoints["get-posts"]}?postId=32`);
-			const doc = res.data[0];
-			setDocument(doc);
-			setInitialData(doc);
-			setOriginalImage(doc.image); // Set original image URL
-		} catch (err) {
-			console.error(err);
-		}
-	};
-
-	useEffect(() => {
-		loadCategories();
-		loadPostTypes();
-		loadDocument();
-	}, []);
-
-	const img = useRef();
-	const [formData, setFormData] = useState({
-		documentName: "",
-		lecturer: "",
-		durability: "",
-		category: "",
-		image: null,
-		postType: "",
-		price: "",
-		description: "",
-		place: "",
-		quantity: "",
-	});
-
-	useEffect(() => {
-		if (document) {
-			setFormData({
-				documentName: document.documentName,
-				lecturer: document.lecturer,
-				durability: document.durability,
-				category: document.category,
-				image: document.image,
-				postType: document.postType._id,
-				price: document.price,
-				description: document.description,
-				place: document.place,
-				quantity: document.quantity,
-			});
-		}
-	}, [document]);
-
-	const recommendations = [
-		"Tài liệu A",
-		"Tài liệu B",
-		"Tài liệu C",
-		"Tài liệu D",
-	];
-
-	const handleChange = (event) => {
-		const { name, value } = event.target;
-		setFormData((prevFormData) => ({
-			...prevFormData,
-			[name]: value,
-		}));
-	};
-
-	const getChangedValues = () => {
-		const changedValues = {};
-		for (const key in formData) {
-			if (formData[key] != initialData[key]) {
-				if (key === "postType") {
-					if (formData[key] != initialData[key]._id) {
-						changedValues[key] = formData[key];
-					}
-				} else {
-					changedValues[key] = formData[key];
-				}
-			}
-		}
-		return changedValues;
-	};
-
-	const handleSubmit = async (event) => {
-		event.preventDefault();
-		const changedData = getChangedValues();
-		if (Object.keys(changedData).length === 0) {
-			console.log("No changes detected.");
-			return; // Exit if no changes
-		}
-		console.log(changedData);
-	};
-
-	const resetImage = () => {
-		setFormData((prevFormData) => ({
-			...prevFormData,
-			image: originalImage, // Reset image to original
-		}));
-	};
-
-	const resetAllFields = () => {
-		if (initialData) {
-			setFormData((prev) => ({
-				documentName: initialData.documentName,
-				lecturer: initialData.lecturer,
-				durability: initialData.durability,
-				category: initialData.category,
-				image: initialData.image, // This will keep the original image
-				postType: initialData.postType._id,
-				price: initialData.price,
-				description: initialData.description,
-				place: initialData.place,
-				quantity: initialData.quantity,
-			}));
-		}
-	};
-
-	const isFormChanged = () => {
-		if (!initialData) return false;
-		const initialValues = {
-			documentName: initialData.documentName,
-			lecturer: initialData.lecturer,
-			durability: initialData.durability,
-			category: initialData.category,
-			image: initialData.image,
-			postType: initialData.postType._id,
-			price: initialData.price,
-			description: initialData.description,
-			place: initialData.place,
-			quantity: initialData.quantity,
-		};
-		for (const key in formData) {
-			if (formData[key] != initialValues[key]) {
-				return true;
-			}
-		}
-		return false;
+const UpdateImage = ({ order }) => {
+	const orderData = {
+		_id: "669e3af22357c02d9fe2ebba",
+		quantity: 1,
+		totalPrice: 175000,
+		createdAt: "2024-07-22T10:56:50.893Z",
+		updatedAt: "2024-07-22T10:56:50.893Z",
+		buyer: {
+			_id: "669dd8dfb396b1c167b43c19",
+			fullName: "Nguyễn Phước Vinh",
+			email: "vinh123@gmail.com",
+			hotline: "0245589358",
+		},
+		post: {
+			_id: "669cf94b7711f058223bbea9",
+			documentName: "Hack não tiếng anh",
+			category: {
+				_id: "669c85331618f7d1287bc338",
+				type: "ORIGINAL",
+				name: "Sách gốc",
+				description: "Đây là sách nguyên bản, không phải sách photo",
+			},
+			postType: {
+				_id: "669c85331618f7d1287bc33e",
+				type: "SELL",
+				name: "Bán",
+			},
+			price: 175000,
+			image: "https://res.cloudinary.com/dbfh15hki/image/upload/f_auto,q_auto/669cf8ce7711f058223bbea0Sun%20Jul%2021%202024%2019:04:25%20GMT%2B0700%20(Indochina%20Time)?_a=BAMADKTE0",
+			place: "D205 OU Mail Thị Lựu",
+			quantity: 0,
+			user: {
+				_id: "669cf8ce7711f058223bbea0",
+				fullName: "Đỗ Thanh Phước",
+				email: "phuoc@gmail.com",
+				hotline: "0214454478",
+			},
+		},
 	};
 
 	return (
-		<Grid
-			container
-			spacing={2}
-			style={{ width: "60%", height: "80%", margin: "auto" }}
-		>
-			<Grid item xs={12}>
-				<Card variant="outlined">
-					<CardContent>
-						<Typography variant="h6" gutterBottom>
-							SỬA TÀI LIỆU
+		<Container maxWidth="md" sx={{ mt: 5 }}>
+			<Typography
+				variant="h4"
+				gutterBottom
+				sx={{ mb: 2, color: blue[800] }}
+			>
+				<Chip
+					icon={<ReceiptLongIcon />}
+					color="primary"
+					label="THÔNG TIN HÓA ĐƠN"
+					// variant="outlined"
+				/>
+			</Typography>
+
+			<Grid container spacing={2}>
+				{/* Delivery Location */}
+				<Grid item xs={12}>
+					<Paper elevation={3} sx={{ padding: 2 }}>
+						<Typography
+							variant="h6"
+							gutterBottom
+							sx={{ color: blue[600] }}
+						>
+							Địa Điểm Nhận Hàng
 						</Typography>
-						<form onSubmit={handleSubmit}>
-							<Grid container spacing={2}>
-								<Grid
-									item
-									xs={3}
-									style={{ textAlign: "center" }}
-								>
-									<input
-										onChange={(e) => {
-											const selectedFile =
-												e.target.files[0];
-											const reader = new FileReader();
-											reader.onloadend = () => {
-												setFormData((prev) => ({
-													...prev,
-													image: reader.result,
-												}));
-											};
-											reader.readAsDataURL(selectedFile);
-										}}
-										accept="image/*"
-										style={{ display: "none" }}
-										id="image-upload"
-										type="file"
-										ref={img}
-									/>
-									<label htmlFor="image-upload">
-										<CardMedia
-											component="img"
-											height="200"
-											image={
-												formData.image ??
-												originalImage ??
-												"https://via.placeholder.com/150"
-											} // Use originalImage as fallback
-											alt="Default Image"
-											style={{ cursor: "pointer" }}
-										/>
-									</label>
-									<Button
-										variant="outlined"
-										onClick={resetImage}
-										style={{ marginTop: "10px" }}
-									>
-										Refresh Image
-									</Button>
-								</Grid>
-								<Grid item xs={9}>
-									<Button
-										variant="outlined"
-										onClick={resetAllFields}
-										style={{
-											marginBottom: 20,
-											marginLeft: "77%",
-										}}
-									>
-										Refresh All
-									</Button>
-									<Grid container spacing={2}>
-										<Grid item xs={12} sm={6}>
-											<Autocomplete
-												freeSolo
-												options={recommendations}
-												value={formData.documentName}
-												onInputChange={(
-													event,
-													newInputValue,
-												) => {
-													setFormData({
-														...formData,
-														documentName:
-															newInputValue,
-													});
-												}}
-												renderInput={(params) => (
-													<TextField
-														{...params}
-														label="Tên tài liệu"
-														fullWidth
-														required
-														name="documentName"
-													/>
-												)}
-											/>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<TextField
-												label="Giảng viên"
-												variant="outlined"
-												fullWidth
-												name="lecturer"
-												value={formData.lecturer}
-												onChange={handleChange}
-											/>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<FormControl
-												fullWidth
-												variant="outlined"
-												required
-											>
-												<InputLabel>
-													Còn mới/cũ
-												</InputLabel>
-												<Select
-													label="Còn mới/cũ"
-													name="durability"
-													value={formData.durability}
-													onChange={handleChange}
-												>
-													<MenuItem value={true}>
-														Mới
-													</MenuItem>
-													<MenuItem value={false}>
-														Cũ
-													</MenuItem>
-												</Select>
-											</FormControl>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<FormControl
-												fullWidth
-												variant="outlined"
-												required
-											>
-												<InputLabel>
-													Loại tài liệu
-												</InputLabel>
-												<Select
-													label="Loại tài liệu"
-													name="category"
-													value={formData.category}
-													onChange={handleChange}
-												>
-													{categories.map(
-														(category, index) => (
-															<MenuItem
-																value={
-																	category._id
-																}
-																key={index}
-															>
-																{category.name}
-															</MenuItem>
-														),
-													)}
-												</Select>
-											</FormControl>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<FormControl
-												fullWidth
-												variant="outlined"
-												required
-											>
-												<InputLabel>
-													Loại giao dịch
-												</InputLabel>
-												<Select
-													label="Loại giao dịch"
-													name="postType"
-													value={formData.postType}
-													onChange={handleChange}
-												>
-													{postTypes.map(
-														(postType, index) => (
-															<MenuItem
-																value={
-																	postType._id
-																}
-																key={index}
-															>
-																{postType.name}{" "}
-																({postType.type}
-																)
-															</MenuItem>
-														),
-													)}
-												</Select>
-											</FormControl>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<TextField
-												label="Giá"
-												variant="outlined"
-												fullWidth
-												type="number"
-												name="price"
-												value={formData.price}
-												onChange={handleChange}
-											/>
-										</Grid>
-										<Grid item xs={12}>
-											<TextField
-												label="Mô tả"
-												variant="outlined"
-												fullWidth
-												name="description"
-												value={formData.description}
-												onChange={handleChange}
-												multiline
-												rows={3}
-											/>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<TextField
-												label="Nơi bán"
-												variant="outlined"
-												fullWidth
-												name="place"
-												value={formData.place}
-												onChange={handleChange}
-											/>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<TextField
-												label="Số lượng"
-												variant="outlined"
-												fullWidth
-												type="number"
-												name="quantity"
-												value={formData.quantity}
-												onChange={handleChange}
-											/>
-										</Grid>
-										<Grid item xs={12}>
-											<Button
-												type="submit"
-												variant="contained"
-												color="primary"
-												fullWidth
-												disabled={!isFormChanged()}
-											>
-												Sửa tài liệu
-											</Button>
-										</Grid>
-									</Grid>
-								</Grid>
+						<Typography variant="body1">
+							{orderData.place}
+						</Typography>
+					</Paper>
+				</Grid>
+
+				{/* Buyer Information */}
+				<Grid item xs={12} md={6}>
+					<Paper elevation={3} sx={{ padding: 2 }}>
+						<Typography
+							variant="h6"
+							gutterBottom
+							sx={{ color: green[600] }}
+						>
+							Thông Tin Người Mua
+						</Typography>
+						<Grid container spacing={2} alignItems="center">
+							<Grid item>
+								<Avatar sx={{ bgcolor: green[500] }}>
+									{orderData.buyer.fullName[0]}
+								</Avatar>
 							</Grid>
-						</form>
-					</CardContent>
-				</Card>
+							<Grid item>
+								<Typography variant="body1">
+									{orderData.buyer.fullName}
+								</Typography>
+								<Typography
+									variant="body2"
+									color="textSecondary"
+								>
+									{orderData.buyer.email}
+								</Typography>
+								<Typography
+									variant="body2"
+									color="textSecondary"
+								>
+									{orderData.buyer.hotline}
+								</Typography>
+							</Grid>
+						</Grid>
+					</Paper>
+				</Grid>
+
+				{/* Seller Information */}
+				<Grid item xs={12} md={6}>
+					<Paper elevation={3} sx={{ padding: 2 }}>
+						<Typography
+							variant="h6"
+							gutterBottom
+							sx={{ color: red[600] }}
+						>
+							Thông Tin Người Bán
+						</Typography>
+						<Grid container spacing={2} alignItems="center">
+							<Grid item>
+								<Avatar sx={{ bgcolor: red[500] }}>
+									{orderData.post.user.fullName[0]}
+								</Avatar>
+							</Grid>
+							<Grid item>
+								<Typography variant="body1">
+									{orderData.post.user.fullName}
+								</Typography>
+								<Typography
+									variant="body2"
+									color="textSecondary"
+								>
+									{orderData.post.user.email}
+								</Typography>
+								<Typography
+									variant="body2"
+									color="textSecondary"
+								>
+									{orderData.post.user.hotline}
+								</Typography>
+							</Grid>
+						</Grid>
+					</Paper>
+				</Grid>
+
+				{/* Product Information */}
+				<Grid item xs={12}>
+					<Card variant="outlined" sx={{ display: "flex", mb: 2 }}>
+						<CardMedia
+							component="img"
+							sx={{
+								width: 120,
+								height: 160,
+								padding: 2,
+								objectFit: "cover",
+							}}
+							image={orderData.post.image}
+							alt={orderData.post.documentName}
+						/>
+						<CardContent sx={{ flex: 1 }}>
+							<Typography variant="h6">
+								{orderData.post.documentName}
+							</Typography>
+							<Typography variant="body2" color="textSecondary">
+								Số lượng: {orderData.quantity}
+							</Typography>
+							<Typography variant="body2" color="textSecondary">
+								Giá:{" "}
+								{orderData.post.price.toLocaleString("vi-VN", {
+									style: "currency",
+									currency: "VND",
+								})}
+							</Typography>
+						</CardContent>
+					</Card>
+				</Grid>
+
+				{/* Payment Information */}
+				<Grid item xs={12}>
+					<Paper elevation={3} sx={{ padding: 2 }}>
+						<Typography
+							variant="h6"
+							gutterBottom
+							sx={{ color: blue[600], mb: 1 }}
+						>
+							Thông Tin Thanh Toán
+						</Typography>
+						<Grid container spacing={2}>
+							<Grid item xs={6}>
+								<Typography variant="body1">
+									Tổng Tiền Hàng
+								</Typography>
+							</Grid>
+							<Grid item xs={6} sx={{ textAlign: "right" }}>
+								<Typography
+									variant="body1"
+									sx={{ fontWeight: "bold" }}
+								>
+									{orderData.totalPrice.toLocaleString(
+										"vi-VN",
+										{
+											style: "currency",
+											currency: "VND",
+										},
+									)}
+								</Typography>
+							</Grid>
+						</Grid>
+					</Paper>
+				</Grid>
 			</Grid>
-		</Grid>
+		</Container>
 	);
 };
 
-export default UpImage;
+export default UpdateImage;

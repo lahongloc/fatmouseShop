@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
 	Container,
 	Grid,
@@ -13,6 +13,9 @@ import {
 	Alert,
 } from "@mui/material";
 import { styled } from "@mui/system";
+import { useNavigate } from "react-router-dom";
+import cookie from "react-cookies";
+import { UserContext } from "../../App";
 
 // Custom styled component for the price
 const PriceChip = styled(Chip)(({ theme }) => ({
@@ -33,15 +36,26 @@ const avatarStyle = {
 };
 
 const ProductDetail = ({ product }) => {
+	const [user, dispatch] = useContext(UserContext);
 	const [purchaseQuantity, setPurchaseQuantity] = useState(1);
 	const [error, setError] = useState("");
+	const [msg, setMsg] = useState({
+		status: false,
+		msg: "",
+	});
+
+	const navigate = useNavigate();
 
 	const handlePurchaseQuantityChange = (event) => {
 		const value = parseInt(event.target.value, 10);
+		console.log("value la: ", value);
 		if (value > product.quantity) {
 			setError(
 				"Số lượng mua không được lớn hơn số lượng sản phẩm có sẵn.",
 			);
+		} else if (value <= 0 || isNaN(value)) {
+			setError("Số lượng phải lớn hơn 0.");
+			setPurchaseQuantity(value);
 		} else {
 			setError("");
 			setPurchaseQuantity(value);
@@ -172,6 +186,18 @@ const ProductDetail = ({ product }) => {
 							/>
 						</Box>
 
+						{msg.status && (
+							<Alert
+								className="animate__animated animate__wobble"
+								sx={{
+									marginTop: 5,
+									marginBottom: 5,
+								}}
+								severity="warning"
+							>
+								{msg.msg}
+							</Alert>
+						)}
 						<Typography variant="body1" gutterBottom>
 							Số lượng có sẵn: {product.quantity}
 						</Typography>
@@ -180,6 +206,7 @@ const ProductDetail = ({ product }) => {
 								display: "flex",
 								alignItems: "center",
 								marginBottom: 2,
+								marginTop: 1.5,
 							}}
 						>
 							<TextField
@@ -191,9 +218,49 @@ const ProductDetail = ({ product }) => {
 								error={!!error}
 								helperText={error}
 								inputProps={{ min: 1, max: product.quantity }}
-								sx={{ marginRight: 2 }}
+								sx={{ marginRight: 2, width: "30%" }}
 							/>
-							<Button variant="contained" color="primary">
+
+							<Button
+								disabled={error}
+								onClick={() => {
+									if (user) {
+										let receipt = {
+											postId: product._id,
+											userId: user.user.id,
+											quantity: purchaseQuantity,
+										};
+
+										const receiptId = `receipt${
+											receipt.postId +
+											receipt.userId +
+											receipt.quantity
+										}`;
+
+										cookie.save(receiptId, receipt, {
+											path: "/order-confirmation/",
+										});
+										cookie.save(receiptId, receipt, {
+											path: "/post-detail",
+										});
+
+										// console.log(receipt);
+										navigate(
+											`/order-confirmation/?receiptId=${receiptId}`,
+										);
+									} else {
+										setMsg({
+											status: true,
+											msg: "Vui lòng đăng nhập để đặt hàng!",
+										});
+										setTimeout(() => {
+											setMsg({});
+										}, 5000);
+									}
+								}}
+								variant="contained"
+								color="primary"
+							>
 								Mua ngay
 							</Button>
 						</Box>

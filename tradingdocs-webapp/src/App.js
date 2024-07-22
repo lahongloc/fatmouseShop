@@ -12,6 +12,7 @@ import UploadForm from "./components/site-compos/UpImage";
 import HomePage from "./components/site-compos/HomePage";
 import DocumentDetail from "./components/site-compos/DocumentDetail";
 import UpdateDocument from "./components/site-compos/UpdateDocument";
+import OrderConfirmation from "./components/site-compos/OrderConfirmation";
 
 export const UserContext = createContext();
 
@@ -79,6 +80,10 @@ function App() {
 							<Route
 								path="/update-document"
 								element={<UpdateDocument />}
+							/>
+							<Route
+								path="/order-confirmation"
+								element={<OrderConfirmation />}
 							/>
 						</>
 					)}

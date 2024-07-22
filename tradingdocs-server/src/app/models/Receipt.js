@@ -5,17 +5,12 @@ const Schema = mongoose.Schema;
 const receiptSchema = new Schema(
 	{
 		// _id: Number,
-		sellerId: {
-			type: mongoose.Types.ObjectId,
-			ref: "User",
-			required: true,
-		},
 		buyerId: {
 			type: mongoose.Types.ObjectId,
 			ref: "User",
 			required: true,
 		},
-		post: { type: mongoose.Types.ObjectId, ref: "Post", required: true },
+		postId: { type: mongoose.Types.ObjectId, ref: "Post", required: true },
 		quantity: { type: Number, required: true },
 		totalPrice: { type: Number, required: true },
 	},
