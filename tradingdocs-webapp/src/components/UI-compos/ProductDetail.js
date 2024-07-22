@@ -48,7 +48,6 @@ const ProductDetail = ({ product }) => {
 
 	const handlePurchaseQuantityChange = (event) => {
 		const value = parseInt(event.target.value, 10);
-		console.log("value la: ", value);
 		if (value > product.quantity) {
 			setError(
 				"Số lượng mua không được lớn hơn số lượng sản phẩm có sẵn.",

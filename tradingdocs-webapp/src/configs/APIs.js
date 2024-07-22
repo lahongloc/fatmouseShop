@@ -14,6 +14,7 @@ export const endpoints = {
 	"get-postTypes": "/postType/get-postTypes",
 	"update-post": "/post/update-post",
 	"create-receipt": "/receipt/create-receipt",
+	"get-receipts": "/receipt/get-receipts",
 };
 
 export default axios.create({

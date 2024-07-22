@@ -2,6 +2,7 @@ import { useSearchParams } from "react-router-dom";
 import APIs, { endpoints } from "../../configs/APIs";
 import { useEffect, useState } from "react";
 import ProductDetail from "../UI-compos/ProductDetail";
+import NotFoundPage from "../UI-compos/NotFoundPage ";
 
 const DocumentDetail = () => {
 	const [q] = useSearchParams();
@@ -14,7 +15,6 @@ const DocumentDetail = () => {
 			let url = `${endpoints["get-posts"]}?postId=${q.get("postId")}`;
 			console.log(url);
 			const res = await APIs.get(url);
-			console.log("nay: ", res.data[0].user.username);
 			setDocument(res.data[0]);
 			setsucess(true);
 		} catch (err) {
@@ -26,6 +26,10 @@ const DocumentDetail = () => {
 	useEffect(() => {
 		loadDocumentDetail();
 	}, []);
+
+	if (sucess && !document) {
+		return <NotFoundPage />;
+	}
 
 	return <>{sucess && <ProductDetail product={document} />}</>;
 };

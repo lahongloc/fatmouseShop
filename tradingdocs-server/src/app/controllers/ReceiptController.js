@@ -2,6 +2,7 @@ const Post = require("../models/Post");
 const PostType = require("../models/PostType");
 const Receipt = require("../models/Receipt");
 const User = require("../models/User");
+const ObjectId = require("mongodb").ObjectId;
 
 class ReceiptController {
 	// [POST] /receipt/create-reipt
@@ -49,7 +50,16 @@ class ReceiptController {
 		// Receipt.deleteMany({});
 		// res.json("done");
 		try {
+			const receiptId = req.query.receiptId
+				? new ObjectId(req.query.receiptId)
+				: null;
+
+			const match = receiptId
+				? { $match: { _id: receiptId } }
+				: { $match: {} };
+
 			let receipts = await Receipt.aggregate([
+				match,
 				{
 					$lookup: {
 						from: "users", // collection name in MongoDB

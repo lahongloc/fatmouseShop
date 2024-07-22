@@ -13,6 +13,7 @@ import HomePage from "./components/site-compos/HomePage";
 import DocumentDetail from "./components/site-compos/DocumentDetail";
 import UpdateDocument from "./components/site-compos/UpdateDocument";
 import OrderConfirmation from "./components/site-compos/OrderConfirmation";
+import ReceiptInfo from "./components/site-compos/ReceiptInfo";
 
 export const UserContext = createContext();
 
@@ -84,6 +85,10 @@ function App() {
 							<Route
 								path="/order-confirmation"
 								element={<OrderConfirmation />}
+							/>
+							<Route
+								path="/receipt-information"
+								element={<ReceiptInfo />}
 							/>
 						</>
 					)}

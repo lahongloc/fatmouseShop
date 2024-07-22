@@ -77,7 +77,7 @@ class UserController {
 							jwt.sign(
 								payload,
 								auth.secret, // Use your own JWT secret key
-								{ expiresIn: "1h" }, // Token expires in 1 hour (optional)
+								{ expiresIn: "7d" }, // Token expires in 1 hour (optional)
 								(err, token) => {
 									if (err) reject(err);
 									resolve(token);

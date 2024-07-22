@@ -97,7 +97,13 @@ class PostController {
 				? new ObjectId(req.query.postId)
 				: null;
 
-			const match = postId ? { $match: { _id: postId } } : { $match: {} };
+			// const match = postId
+			// 	? { $match: { _id: postId }, quantity: { $gt: 0 } }
+			// 	: { $match: {}, quantity: { $gt: 0 } };
+
+			const match = postId
+				? { $match: { _id: postId, quantity: { $gt: 0 } } }
+				: { $match: { quantity: { $gt: 0 } } };
 			let posts = await Post.aggregate([
 				match,
 				{
