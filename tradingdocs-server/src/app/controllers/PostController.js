@@ -197,7 +197,7 @@ class PostController {
 	// [PUT] /post/update-post/:id
 	async updatePost(req, res, next) {
 		// res.json(req.user);
-		console.log("userrrr", req.user);
+		// console.log("userrrr", req.user);
 		const categoryId = req.body.category ?? null;
 		const postTypeId = req.body.postType ?? null;
 
@@ -241,6 +241,17 @@ class PostController {
 			.catch((err) => {
 				res.status(400).send({ msg: err });
 			});
+	}
+
+	// [GET] /post/get-posts-by-user-id
+	async getPostsByUserId(req, res, next) {
+		try {
+			const userId = req.user.user.id;
+			const posts = await Post.find({ userId });
+			res.json(posts);
+		} catch (error) {
+			next(error);
+		}
 	}
 }
 module.exports = new PostController();

@@ -26,8 +26,8 @@ function Header() {
 	const nav = useNavigate();
 	const settings = [
 		{
-			name: "Hồ sơ",
-			link: "/account-details",
+			name: "Tài khoản",
+			link: "/user-info",
 		},
 		{
 			name: "Đăng xuất",

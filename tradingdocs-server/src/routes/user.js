@@ -8,5 +8,15 @@ const userController = require("../app/controllers/UserController");
 router.post("/register", userController.register);
 router.post("/login", userController.login);
 router.get("/current-user", authenticateToken, userController.takeCurrentUser);
+router.get(
+	"/postType-statistic",
+	authenticateToken,
+	userController.postTypeStatistic,
+);
+router.get(
+	"/revenue-statistic",
+	authenticateToken,
+	userController.revenueStatistic,
+);
 
 module.exports = router;

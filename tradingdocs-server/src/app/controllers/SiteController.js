@@ -2,9 +2,12 @@ const uploadImage = require("../../config/clouds/cloudinary/uploadImage");
 const Post = require("../models/Post");
 const User = require("../models/User");
 const PostType = require("../models/PostType");
+const Receipt = require("../models/Receipt");
 class SiteController {
 	// [GET] /
 	async index(req, res, next) {
+		// const result = await Receipt.deleteMany({});
+		// res.send(`Deleted ${result.deletedCount} receipts`);
 		// const p = new PostType({
 		// 	type: "GIFT",
 		// 	name: "Tặng",

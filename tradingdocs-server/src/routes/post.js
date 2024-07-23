@@ -18,5 +18,10 @@ router.put(
 	postController.updatePost,
 );
 router.get("/get-posts", postController.getPosts);
+router.get(
+	"/get-posts-by-user-id",
+	authenticateToken,
+	postController.getPostsByUserId,
+);
 
 module.exports = router;

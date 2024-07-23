@@ -14,6 +14,7 @@ import DocumentDetail from "./components/site-compos/DocumentDetail";
 import UpdateDocument from "./components/site-compos/UpdateDocument";
 import OrderConfirmation from "./components/site-compos/OrderConfirmation";
 import ReceiptInfo from "./components/site-compos/ReceiptInfo";
+import UserInfo from "./components/site-compos/UserInfo";
 
 export const UserContext = createContext();
 
@@ -90,6 +91,7 @@ function App() {
 								path="/receipt-information"
 								element={<ReceiptInfo />}
 							/>
+							<Route path="/user-info" element={<UserInfo />} />
 						</>
 					)}
 					<Route path="/up" element={<UploadForm {...orderData} />} />

@@ -47,8 +47,6 @@ class ReceiptController {
 
 	// [GET] /receipt/get-receipts
 	async getReceipts(req, res, next) {
-		// Receipt.deleteMany({});
-		// res.json("done");
 		try {
 			const receiptId = req.query.receiptId
 				? new ObjectId(req.query.receiptId)
