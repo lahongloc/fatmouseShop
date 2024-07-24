@@ -127,17 +127,17 @@ class UserController {
 				{
 					$lookup: {
 						from: "posttypes",
-						localField: "postDetails.postType",
+						localField: "transactionType",
 						foreignField: "_id",
-						as: "postTypeDetails",
+						as: "transactionTypeDetails",
 					},
 				},
-				{ $unwind: "$postTypeDetails" },
+				{ $unwind: "$transactionTypeDetails" },
 				{
 					$group: {
 						_id: {
 							userId: "$postDetails.userId",
-							postType: "$postTypeDetails.name",
+							transactionType: "$transactionTypeDetails.name",
 						},
 						totalQuantity: { $sum: "$quantity" },
 					},
@@ -156,7 +156,7 @@ class UserController {
 						_id: 0,
 						// userId: "$_id.userId",
 						// userName: "$userDetails.fullName",
-						name: "$_id.postType",
+						name: "$_id.transactionType",
 						// totalQuantity: 1,
 						value: "$totalQuantity",
 					},
@@ -229,23 +229,66 @@ class UserController {
 			result.push({
 				totalPostsQuantity,
 			});
-			console.log("kqua la: ", result);
-			// if (result.length > 0) {
-			// 	result[0].totalPostsQuantity = totalPostsQuantity ?? 0;
-			// } else {
-			// 	// If result is empty, provide a default value
-			// 	result.push({
-			// 		userId: new mongoose.Types.ObjectId(userId),
-			// 		userName: (await User.findById(userId)).fullName,
-			// 		totalRevenue: 0,
-			// 		totalPostsQuantity: totalPostsQuantity ?? 0,
-			// 	});
-			// }
 
 			res.json(result);
 		} catch (error) {
 			console.error("Error in countPostsByPostType:", error);
 			throw error;
+		}
+	}
+
+	// [GET] /user/receipts-statistic
+	async receiptsStatistic(req, res, next) {
+		try {
+			const results = await Receipt.aggregate([
+				{
+					$match: { buyerId: new ObjectId(req.user.user.id) }, // Lọc theo buyerId
+				},
+				{
+					$lookup: {
+						from: "posttypes", // Tên của collection chứa thông tin PostType
+						localField: "transactionType", // Trường trong Receipt chứa thông tin transactionType
+						foreignField: "_id", // Trường trong PostType chứa thông tin transactionType
+						as: "transactionTypeDetails",
+					},
+				},
+				{
+					$unwind: "$transactionTypeDetails", // Giải nén mảng transactionTypeDetails
+				},
+				{
+					$group: {
+						_id: "$transactionTypeDetails.type", // Nhóm theo tên transactionType
+						totalQuantity: { $sum: "$quantity" }, // Sum số lượng
+					},
+				},
+				{
+					$sort: { totalQuantity: -1 }, // Sắp xếp theo số lượng giảm dần
+				},
+			]);
+
+			res.json(results);
+		} catch (error) {
+			console.error("Error aggregating receipts:", error);
+			throw error;
+		}
+	}
+
+	// [GET] /user/get-buyer-total-price
+	async getBuyerTotalPrice(req, res, next) {
+		try {
+			const totalPrices = await Receipt.aggregate([
+				{ $match: { buyerId: new ObjectId(req.user.user.id) } },
+				{
+					$group: {
+						_id: "$buyerId",
+						totalPrice: { $sum: "$totalPrice" },
+					},
+				},
+			]);
+
+			res.json(totalPrices);
+		} catch (error) {
+			console.error(error);
 		}
 	}
 }

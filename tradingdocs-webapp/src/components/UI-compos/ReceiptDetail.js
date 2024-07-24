@@ -68,7 +68,7 @@ const ReceiptDetail = ({ orderData }) => {
 					<CardContent sx={{ flex: 1 }}>
 						{/* <Typography></Typography> */}
 						<Badge
-							badgeContent={orderData.post.postType.name}
+							badgeContent={orderData.transactionType.name}
 							color="success"
 							sx={{ textTransform: "uppercase" }}
 						>

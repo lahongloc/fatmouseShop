@@ -32,12 +32,19 @@ function Header() {
 		{
 			name: "Đăng xuất",
 			call: () => {
+				console.log("dang xuat a");
 				dispatch({
 					type: LOGOUT,
 				});
 			},
 		},
 	];
+
+	const logout = () => {
+		dispatch({
+			type: LOGOUT,
+		});
+	};
 
 	const [anchorElNav, setAnchorElNav] = React.useState(null);
 	const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -118,6 +125,9 @@ function Header() {
 
 						{user ? (
 							<Box sx={{ flexGrow: 0 }}>
+								<Button onClick={logout} variant="info">
+									Đăng Xuất {user.name}
+								</Button>
 								<Tooltip title={user.user.fullName}>
 									<IconButton
 										onClick={handleOpenUserMenu}
@@ -159,7 +169,10 @@ function Header() {
 												handleCloseUserMenu();
 												if (setting.link)
 													nav(setting.link);
-												else setting.call();
+												else {
+													console.log("đăng cuât");
+													setting.call();
+												}
 											}}
 										>
 											<Typography textAlign="center">

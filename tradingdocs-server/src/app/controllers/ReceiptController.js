@@ -15,11 +15,14 @@ class ReceiptController {
 				throw new Error("Invalid buyer");
 			}
 
+			const postType = await PostType.findById(post.postType);
+
 			const receipt = {
 				buyerId: buyer,
 				postId: post,
 				quantity: req.body.quantity,
 				totalPrice: req.body.totalPrice,
+				transactionType: postType,
 			};
 
 			if (receipt.quantity > post.quantity)
@@ -100,20 +103,20 @@ class ReceiptController {
 				},
 
 				// Lookup postType details
-				{
-					$lookup: {
-						from: "posttypes", // collection name in MongoDB
-						localField: "post.postType",
-						foreignField: "_id",
-						as: "post.postType",
-					},
-				},
-				{
-					$unwind: {
-						path: "$post.postType",
-						preserveNullAndEmptyArrays: true, // In case postType details are not found
-					},
-				},
+				// {
+				// 	$lookup: {
+				// 		from: "posttypes", // collection name in MongoDB
+				// 		localField: "post.postType",
+				// 		foreignField: "_id",
+				// 		as: "post.postType",
+				// 	},
+				// },
+				// {
+				// 	$unwind: {
+				// 		path: "$post.postType",
+				// 		preserveNullAndEmptyArrays: true, // In case postType details are not found
+				// 	},
+				// },
 
 				// Lookup category details
 				{
@@ -130,11 +133,27 @@ class ReceiptController {
 						preserveNullAndEmptyArrays: true, // In case category details are not found
 					},
 				},
+				{
+					$lookup: {
+						from: "posttypes", // collection name in MongoDB
+						localField: "transactionType",
+						foreignField: "_id",
+						as: "transactionType",
+					},
+				},
+				{
+					$unwind: "$transactionType", // Unwind the array to get an object
+				},
 
 				// Project the fields including postType and category details
 				{
 					$project: {
 						_id: 1,
+						transactionType: {
+							_id: 1,
+							type: 1,
+							name: 1,
+						},
 						buyer: {
 							_id: 1,
 							fullName: 1,
@@ -154,12 +173,7 @@ class ReceiptController {
 								email: 1,
 								hotline: 1,
 							},
-							postType: {
-								// Include all fields of postType
-								_id: 1,
-								type: 1,
-								name: 1,
-							},
+							postType: 1,
 							category: {
 								// Include all fields of category
 								_id: 1,
@@ -179,6 +193,27 @@ class ReceiptController {
 		} catch (err) {
 			console.error(err);
 			res.status(500).json({ error: "Internal server error" });
+		}
+	}
+
+	// [GET] /receipt/get-receipts-by-buyer-id
+	async getReceiptsByBuyerId(req, res, next) {
+		try {
+			const buyer = await User.findById(req.user.user.id);
+			const receipts = await Receipt.find({ buyerId: buyer })
+				.populate({
+					path: "transactionType", // Populate the transactionType field
+					select: "-__v", // Optionally exclude the __v field from the result
+				})
+				.populate({
+					path: "postId", // Populate the postId field if needed
+					select: "-__v", // Optionally exclude the __v field from the result
+				});
+
+			res.json(receipts);
+		} catch (err) {
+			console.error("Error retrieving receipts:", err);
+			throw err;
 		}
 	}
 }

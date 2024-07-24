@@ -3,26 +3,14 @@ import { PieChart, Pie, Cell, Tooltip, Label } from "recharts";
 import { Box, Chip, Paper, Typography } from "@mui/material";
 import InsertChartOutlinedTwoToneIcon from "@mui/icons-material/InsertChartOutlinedTwoTone";
 
-const data = [
-	{
-		_id: "EXCHANGE",
-		totalQuantity: 3,
-	},
-	{
-		_id: "SELL",
-		totalQuantity: 1,
-	},
-	{
-		_id: "GIFT",
-		totalQuantity: 1,
-	},
-];
-
 const totalPrice = 50000;
 
-const UpdateImage = () => {
-	const chartData = data
-		? data.map((item) => ({ name: item._id, value: item.totalQuantity }))
+const CoupleCharts = ({ ...props }) => {
+	const chartData = props.transactionData
+		? props.transactionData.map((item) => ({
+				name: item._id,
+				value: item.totalQuantity,
+		  }))
 		: [];
 
 	const COLORS = [
@@ -111,7 +99,7 @@ const UpdateImage = () => {
 							data={[
 								{
 									name: "Tổng doanh thu",
-									value: totalPrice,
+									value: props.totalPrice,
 								},
 							]}
 							cx="50%"
@@ -124,7 +112,7 @@ const UpdateImage = () => {
 						>
 							<Cell fill="rgba(255, 198, 88, 0.6)" />
 							<Label
-								value={`${totalPrice} đ`}
+								value={`${props.totalPrice.toLocaleString()} đ`}
 								position="center"
 								style={{
 									fontSize: "16px",
@@ -144,4 +132,4 @@ const UpdateImage = () => {
 	);
 };
 
-export default UpdateImage;
+export default CoupleCharts;

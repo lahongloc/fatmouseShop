@@ -18,6 +18,9 @@ export const endpoints = {
 	"get-postType-statistic": "/user/postType-statistic",
 	"get-revenue-statistic": "/user/revenue-statistic",
 	"get-post-by-user-id": "/post/get-posts-by-user-id",
+	"get-receipts-by-buyer-id": "/receipt/get-receipts-by-buyer-id",
+	"get-buyer-total-price": "/user/get-buyer-total-price",
+	"get-transaction-statistic": "/user/receipts-statistic",
 };
 
 export default axios.create({

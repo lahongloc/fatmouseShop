@@ -10,6 +10,11 @@ const receiptSchema = new Schema(
 			ref: "User",
 			required: true,
 		},
+		transactionType: {
+			type: mongoose.Types.ObjectId,
+			ref: "PostType",
+			required: true,
+		},
 		postId: { type: mongoose.Types.ObjectId, ref: "Post", required: true },
 		quantity: { type: Number, required: true },
 		totalPrice: { type: Number, required: true },

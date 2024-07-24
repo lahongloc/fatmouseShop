@@ -10,5 +10,10 @@ router.post(
 );
 
 router.get("/get-receipts", receiptController.getReceipts);
+router.get(
+	"/get-receipts-by-buyer-id",
+	authenticateToken,
+	receiptController.getReceiptsByBuyerId,
+);
 
 module.exports = router;

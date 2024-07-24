@@ -19,6 +19,11 @@ import { LOGIN } from "../../reducers/actions";
 import LinearBuffer from "../UI-compos/LinearBuffer";
 import { Alert } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+	save as saveCookie,
+	load,
+	remove as removeCookie,
+} from "react-cookies";
 
 function Copyright(props) {
 	return (
@@ -61,15 +66,22 @@ export default function SignIn() {
 					username: userData.get("username"),
 					password: userData.get("password"),
 				});
-				cookie.save("token", res.data.token);
+				// cookie.save("token", res.data.token);
+				saveCookie("token", res.data.token, {
+					path: "/",
+					domain: window.location.hostname,
+				});
 
 				const currentUser = await APIs.get(endpoints["current-user"], {
 					headers: {
 						Authorization: res.data.token,
 					},
 				});
-				cookie.save("user", currentUser.data.user);
-				console.log("current: ", currentUser.data.user);
+				// cookie.save("user", currentUser.data.user);
+				saveCookie("user", currentUser.data.user, {
+					path: "/",
+					domain: window.location.hostname,
+				});
 
 				dispatch({
 					type: LOGIN,

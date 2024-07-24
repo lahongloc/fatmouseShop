@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react";
+import { createContext, useEffect, useReducer } from "react";
 import cookie from "react-cookies";
 import "./App.css";
 import UserReducer from "./reducers/UserReducer";
@@ -15,6 +15,8 @@ import UpdateDocument from "./components/site-compos/UpdateDocument";
 import OrderConfirmation from "./components/site-compos/OrderConfirmation";
 import ReceiptInfo from "./components/site-compos/ReceiptInfo";
 import UserInfo from "./components/site-compos/UserInfo";
+import ReceiptsList from "./components/site-compos/ReceiptsList";
+import Footer from "./commons/Footer";
 
 export const UserContext = createContext();
 
@@ -50,9 +52,15 @@ function App() {
 		cookie.load("user") || null,
 	);
 
+	// useEffect(() => {
+	// 	if (cookie.load("user")) {
+	// 		dispatch({ type: "LOGIN", payload: cookie.load("user") });
+	// 	}
+	// }, []);
+
 	return (
-		<UserContext.Provider value={[user, dispatch]} className="App">
-			<BrowserRouter>
+		<BrowserRouter>
+			<UserContext.Provider value={[user, dispatch]} className="App">
 				<Header />
 				{/* <Routes>
 					{isNormalUser(user) && (
@@ -92,6 +100,10 @@ function App() {
 								element={<ReceiptInfo />}
 							/>
 							<Route path="/user-info" element={<UserInfo />} />
+							<Route
+								path="/receipts-list"
+								element={<ReceiptsList />}
+							/>
 						</>
 					)}
 					<Route path="/up" element={<UploadForm {...orderData} />} />
@@ -100,8 +112,9 @@ function App() {
 					<Route path="/" element={<HomePage />} />
 					<Route path="/post-detail" element={<DocumentDetail />} />
 				</Routes>
-			</BrowserRouter>
-		</UserContext.Provider>
+				<Footer />
+			</UserContext.Provider>
+		</BrowserRouter>
 	);
 }
 

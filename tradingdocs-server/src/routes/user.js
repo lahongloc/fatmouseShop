@@ -18,5 +18,15 @@ router.get(
 	authenticateToken,
 	userController.revenueStatistic,
 );
+router.get(
+	"/receipts-statistic",
+	authenticateToken,
+	userController.receiptsStatistic,
+);
 
+router.get(
+	"/get-buyer-total-price",
+	authenticateToken,
+	userController.getBuyerTotalPrice,
+);
 module.exports = router;
