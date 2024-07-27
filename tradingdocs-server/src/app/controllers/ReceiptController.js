@@ -51,13 +51,14 @@ class ReceiptController {
 	// [GET] /receipt/get-receipts
 	async getReceipts(req, res, next) {
 		try {
+			const buyer = new ObjectId(req.user.user.id);
 			const receiptId = req.query.receiptId
 				? new ObjectId(req.query.receiptId)
 				: null;
 
 			const match = receiptId
-				? { $match: { _id: receiptId } }
-				: { $match: {} };
+				? { $match: { _id: receiptId, buyerId: buyer } }
+				: { $match: { buyerId: buyer } };
 
 			let receipts = await Receipt.aggregate([
 				match,
@@ -101,22 +102,6 @@ class ReceiptController {
 						preserveNullAndEmptyArrays: true, // In case user details are not found
 					},
 				},
-
-				// Lookup postType details
-				// {
-				// 	$lookup: {
-				// 		from: "posttypes", // collection name in MongoDB
-				// 		localField: "post.postType",
-				// 		foreignField: "_id",
-				// 		as: "post.postType",
-				// 	},
-				// },
-				// {
-				// 	$unwind: {
-				// 		path: "$post.postType",
-				// 		preserveNullAndEmptyArrays: true, // In case postType details are not found
-				// 	},
-				// },
 
 				// Lookup category details
 				{
@@ -208,12 +193,42 @@ class ReceiptController {
 				.populate({
 					path: "postId", // Populate the postId field if needed
 					select: "-__v", // Optionally exclude the __v field from the result
-				});
+				})
+				.sort({ createdAt: -1 });
 
 			res.json(receipts);
 		} catch (err) {
 			console.error("Error retrieving receipts:", err);
 			throw err;
+		}
+	}
+	// [GET] /receipt/get-customer-orders
+	async getCustomerOrders(req, res, next) {
+		// res.json(req.user.user);
+
+		try {
+			// Step 1: Fetch posts by user ID
+			const posts = await Post.find({
+				userId: new ObjectId(req.user.user.id),
+			});
+
+			// res.json(posts);
+
+			// // Step 2: Extract post IDs
+			const postIds = posts.map((post) => post._id);
+
+			// // Step 3: Fetch receipts by post IDs
+			const receipts = await Receipt.find({ postId: { $in: postIds } })
+				.populate("buyerId")
+				.populate("transactionType")
+				.populate("postId")
+				.sort({ createdAt: -1 });
+
+			res.json(receipts);
+			// return receipts;
+		} catch (error) {
+			console.error("Error fetching receipts by user ID:", error);
+			throw error;
 		}
 	}
 }

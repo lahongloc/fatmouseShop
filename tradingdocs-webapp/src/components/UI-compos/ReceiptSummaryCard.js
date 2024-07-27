@@ -14,13 +14,13 @@ import { grey } from "@mui/material/colors";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
 
-const ReceiptSummaryCard = ({ receipt }) => {
+const ReceiptSummaryCard = ({ receipt, link }) => {
 	const navigate = useNavigate();
 	return (
 		<Paper
 			elevation={3}
 			sx={{
-				maxWidth: 600,
+				width: "500px",
 				margin: "auto",
 				mt: 1,
 				mb: 1,
@@ -29,7 +29,7 @@ const ReceiptSummaryCard = ({ receipt }) => {
 				// backgroundColor: grey[50],
 			}}
 			onClick={() => {
-				navigate(`/post-detail/?postId=${receipt.postId._id}`);
+				navigate(link);
 			}}
 		>
 			<Card
@@ -39,7 +39,7 @@ const ReceiptSummaryCard = ({ receipt }) => {
 					position: "relative",
 				}}
 			>
-				<Tooltip title="Thêm tùy chọn">
+				{/* <Tooltip title="Thêm tùy chọn">
 					<IconButton
 						sx={{
 							position: "absolute",
@@ -50,7 +50,7 @@ const ReceiptSummaryCard = ({ receipt }) => {
 					>
 						<MoreVertIcon />
 					</IconButton>
-				</Tooltip>
+				</Tooltip> */}
 
 				<CardContent>
 					<Grid container spacing={2}>

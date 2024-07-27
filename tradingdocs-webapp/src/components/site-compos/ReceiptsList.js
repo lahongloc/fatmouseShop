@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import APIs, { endpoints } from "../../configs/APIs";
 import cookie from "react-cookies";
 import ReceiptSummaryCard from "../UI-compos/ReceiptSummaryCard";
-import { Box, Chip, Container, Grid, Typography } from "@mui/material";
+import { Alert, Box, Chip, Container, Grid, Typography } from "@mui/material";
 import UpdateImage from "./UpImage";
 import StickyNote2OutlinedIcon from "@mui/icons-material/StickyNote2Outlined";
 import CoupleCharts from "../UI-compos/CoupleCharts";
+import EmptyCart from "../UI-compos/EmptyCard";
 
 const ReceiptsList = () => {
 	const [receipts, setReceipts] = useState([]);
@@ -45,7 +46,7 @@ const ReceiptsList = () => {
 				},
 			);
 
-			setTotalSpent(totalSpentRes.data[0].totalPrice);
+			setTotalSpent(totalSpentRes?.data[0]?.totalPrice ?? 0);
 			setSuccess(true);
 		} catch (err) {
 			setSuccess(false);
@@ -57,6 +58,9 @@ const ReceiptsList = () => {
 		loadReceipts();
 	}, []);
 
+	if (success && receipts.length == 0) {
+		return <EmptyCart text={"Bạn vẫn chưa đặt đơn hàng nào"} />;
+	}
 	return (
 		<>
 			<Container sx={{ pt: 5 }}>
@@ -107,6 +111,7 @@ const ReceiptsList = () => {
 								// border: "1px solid black",
 								padding: "0 2rem",
 								height: "65vh",
+								width: "max-content",
 								overflowY: "scroll",
 								"&::-webkit-scrollbar": {
 									width: "8px", // Width of the scrollbar
@@ -132,6 +137,7 @@ const ReceiptsList = () => {
 										<ReceiptSummaryCard
 											key={index}
 											receipt={receipt}
+											link={`/receipt-information/?receiptId=${receipt._id}`}
 										/>
 									);
 								})}

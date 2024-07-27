@@ -15,7 +15,7 @@ const bounceAnimation = keyframes`
   }
 `;
 
-const UpdateImage = () => {
+const EmptyCart = ({ text }) => {
 	return (
 		<Container
 			maxWidth="sm"
@@ -41,7 +41,7 @@ const UpdateImage = () => {
 				gutterBottom
 				sx={{ marginTop: 2, color: "#1976d2", fontWeight: "bold" }}
 			>
-				Bạn vẫn chưa bán được đơn hàng nào
+				{text}
 			</Typography>
 			<Button
 				variant="contained"
@@ -62,4 +62,4 @@ const UpdateImage = () => {
 	);
 };
 
-export default UpdateImage;
+export default EmptyCart;

@@ -5,8 +5,10 @@ import Checkbox from "@mui/material/Checkbox";
 import APIs, { endpoints } from "../../configs/APIs";
 import LinearBuffer from "../UI-compos/LinearBuffer";
 import "animate.css";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
+	const navigate = useNavigate();
 	const [message, setMessage] = useState({
 		success: false,
 		error: false,
@@ -103,6 +105,9 @@ const SignUp = () => {
 				</Typography>
 				<Typography sx={{ paddingTop: 2.5 }}>
 					<Button
+						onClick={() => {
+							navigate("/sign-in");
+						}}
 						sx={{
 							borderRadius: 2,
 							backgroundColor: "#006edc",

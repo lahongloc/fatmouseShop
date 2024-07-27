@@ -258,7 +258,7 @@ class UserController {
 				{
 					$group: {
 						_id: "$transactionTypeDetails.type", // Nhóm theo tên transactionType
-						totalQuantity: { $sum: "$quantity" }, // Sum số lượng
+						totalQuantity: { $sum: 1 }, // Sum số lượng
 					},
 				},
 				{

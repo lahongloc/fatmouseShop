@@ -17,6 +17,7 @@ import ReceiptInfo from "./components/site-compos/ReceiptInfo";
 import UserInfo from "./components/site-compos/UserInfo";
 import ReceiptsList from "./components/site-compos/ReceiptsList";
 import Footer from "./commons/Footer";
+import CustomerOrders from "./components/site-compos/CustomerOrders";
 
 export const UserContext = createContext();
 
@@ -103,6 +104,10 @@ function App() {
 							<Route
 								path="/receipts-list"
 								element={<ReceiptsList />}
+							/>
+							<Route
+								path="/all-orders"
+								element={<CustomerOrders />}
 							/>
 						</>
 					)}

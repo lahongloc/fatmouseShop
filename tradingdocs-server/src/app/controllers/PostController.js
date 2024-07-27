@@ -101,9 +101,7 @@ class PostController {
 			// 	? { $match: { _id: postId }, quantity: { $gt: 0 } }
 			// 	: { $match: {}, quantity: { $gt: 0 } };
 
-			const match = postId
-				? { $match: { _id: postId, quantity: { $gt: 0 } } }
-				: { $match: { quantity: { $gt: 0 } } };
+			const match = postId ? { $match: { _id: postId } } : { $match: {} };
 			let posts = await Post.aggregate([
 				match,
 				{

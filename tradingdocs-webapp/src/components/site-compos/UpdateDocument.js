@@ -521,6 +521,9 @@ const UpdateDocument = ({ match }) => {
 															formData.quantity
 														}
 														onChange={handleChange}
+														inputProps={{
+															min: 1,
+														}}
 													/>
 												</Grid>
 												<Grid item xs={12}>

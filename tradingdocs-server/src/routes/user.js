@@ -29,4 +29,5 @@ router.get(
 	authenticateToken,
 	userController.getBuyerTotalPrice,
 );
+
 module.exports = router;

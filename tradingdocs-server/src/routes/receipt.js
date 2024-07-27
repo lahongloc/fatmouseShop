@@ -9,11 +9,17 @@ router.post(
 	receiptController.createReceipt,
 );
 
-router.get("/get-receipts", receiptController.getReceipts);
+router.get("/get-receipts", authenticateToken, receiptController.getReceipts);
 router.get(
 	"/get-receipts-by-buyer-id",
 	authenticateToken,
 	receiptController.getReceiptsByBuyerId,
+);
+
+router.get(
+	"/get-customer-orders",
+	authenticateToken,
+	receiptController.getCustomerOrders,
 );
 
 module.exports = router;

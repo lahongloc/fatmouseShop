@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ReceiptDetail from "../UI-compos/ReceiptDetail";
 import { useSearchParams } from "react-router-dom";
 import APIs, { endpoints } from "../../configs/APIs";
+import cookie from "react-cookies";
 
 const ReceiptInfo = () => {
 	const [receipt, setReceipt] = useState({});
@@ -13,6 +14,11 @@ const ReceiptInfo = () => {
 		try {
 			const res = await APIs.get(
 				`${endpoints["get-receipts"]}?receiptId=${q.get("receiptId")}`,
+				{
+					headers: {
+						Authorization: cookie.load("token"),
+					},
+				},
 			);
 			setReceipt(res.data[0]);
 			setSuccess(true);

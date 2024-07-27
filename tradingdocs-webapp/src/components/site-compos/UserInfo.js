@@ -16,55 +16,66 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { UserContext } from "../../App";
 import APIs, { endpoints } from "../../configs/APIs";
 import cookie from "react-cookies";
-
-const columns = [
-	{
-		field: "image",
-		headerName: "Ảnh",
-		width: 100,
-		renderCell: (params) => (
-			<img
-				src={params.value}
-				alt=""
-				style={{ width: "100%", borderRadius: "8px" }}
-			/>
-		),
-	},
-	{ field: "documentName", headerName: "Tên Tài Liệu", width: 220 },
-	{ field: "quantity", headerName: "Số Lượng", width: 120 },
-	{
-		field: "price",
-		headerName: "Giá",
-		width: 100,
-	},
-	{
-		field: "actions",
-		headerName: "Hành Động",
-		width: 150,
-		renderCell: (params) => (
-			<Box>
-				<IconButton
-					color="primary"
-					onClick={() =>
-						alert(`Xem chi tiết của ${params.row.documentName}`)
-					}
-				>
-					<VisibilityIcon />
-				</IconButton>
-				<IconButton
-					color="secondary"
-					onClick={() =>
-						alert(`Xóa tài liệu ${params.row.documentName}`)
-					}
-				>
-					<DeleteIcon />
-				</IconButton>
-			</Box>
-		),
-	},
-];
+import CreateIcon from "@mui/icons-material/Create";
 
 const UserInfo = () => {
+	const columns = [
+		{
+			field: "image",
+			headerName: "Ảnh",
+			width: 100,
+			renderCell: (params) => (
+				<img
+					src={params.value}
+					alt=""
+					style={{ width: "100%", borderRadius: "8px" }}
+				/>
+			),
+		},
+		{ field: "documentName", headerName: "Tên Tài Liệu", width: 220 },
+		{ field: "quantity", headerName: "Số Lượng", width: 120 },
+		{
+			field: "price",
+			headerName: "Giá",
+			width: 100,
+		},
+		{
+			field: "actions",
+			headerName: "Hành Động",
+			width: 150,
+			renderCell: (params) => (
+				<Box>
+					<IconButton
+						color="primary"
+						onClick={() => {
+							const url = `/update-document/?postId=${params.row.id}`;
+							window.open(url, "_blank");
+						}}
+					>
+						<CreateIcon />
+					</IconButton>
+					<IconButton
+						color="primary"
+						onClick={() => {
+							const url = `/post-detail/?postId=${params.row.id}`;
+							window.open(url, "_blank");
+						}}
+					>
+						<VisibilityIcon />
+					</IconButton>
+					<IconButton
+						color="success"
+						onClick={() =>
+							alert(`Xóa tài liệu ${params.row.documentName}`)
+						}
+					>
+						<DeleteIcon />
+					</IconButton>
+				</Box>
+			),
+		},
+	];
+
 	const [user, dispatch] = useContext(UserContext);
 	const [postTypeStats, setPostTypeStats] = useState([
 		{ name: "", value: 0 },

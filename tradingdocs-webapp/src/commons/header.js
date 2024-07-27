@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 import LoginIcon from "@mui/icons-material/Login";
 import AvatarChip from "../components/UI-compos/AvatarChip";
 import { isNormalUser } from "../authorizations/roleAuths";
-// import { isLecturer, isStudent } from "../UserAuthorization/UserAuthoriation";
+import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 
 function Header() {
 	const [user, dispatch] = React.useContext(UserContext);
@@ -29,10 +29,11 @@ function Header() {
 			name: "Tài khoản",
 			link: "/user-info",
 		},
+		{ name: "Các đơn hàng đã đặt", link: "/receipts-list" },
+		{ name: "Đơn hàng của khách", link: "/all-orders" },
 		{
 			name: "Đăng xuất",
 			call: () => {
-				console.log("dang xuat a");
 				dispatch({
 					type: LOGOUT,
 				});
@@ -146,6 +147,7 @@ function Header() {
 										/>
 									</IconButton>
 								</Tooltip>
+
 								<Menu
 									sx={{ mt: "45px" }}
 									id="menu-appbar"
@@ -183,15 +185,26 @@ function Header() {
 								</Menu>
 							</Box>
 						) : (
-							<Button
-								onClick={() => {
-									nav("/sign-in");
-								}}
-								variant="secondary"
-								startIcon={<LoginIcon />}
-							>
-								Đăng nhập
-							</Button>
+							<>
+								<Button
+									onClick={() => {
+										nav("/sign-in");
+									}}
+									variant="secondary"
+									startIcon={<LoginIcon />}
+								>
+									Đăng nhập
+								</Button>
+								<Button
+									onClick={() => {
+										nav("/sign-up");
+									}}
+									variant="secondary"
+									startIcon={<ExitToAppOutlinedIcon />}
+								>
+									Đăng ký
+								</Button>
+							</>
 						)}
 					</Toolbar>
 				</Container>

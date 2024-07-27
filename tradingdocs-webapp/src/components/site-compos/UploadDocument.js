@@ -70,13 +70,34 @@ const UploadDocument = () => {
 		quantity: "",
 	});
 
+	const [isPriceDisabled, setIsPriceDisabled] = useState(false);
+
 	const handleChange = (event) => {
 		const { name, value, type, checked } = event.target;
-		setFormData((prevFormData) => ({
-			...prevFormData,
-			[name]: type === "checkbox" ? checked : value,
-			[name]: value < 0 ? 0 : value,
-		}));
+		// if (value == "669c85331618f7d1287bc33e")
+		// 	console.log("gia tri la: ", postTypes);
+		const postTypeSelected = postTypes.find(
+			(postType) => postType._id == value,
+		);
+		if (
+			postTypeSelected?.type === "EXCHANGE" ||
+			postTypeSelected?.type === "GIFT"
+		) {
+			setIsPriceDisabled(true);
+			setFormData((prevFormData) => ({
+				...prevFormData,
+				[name]: type === "checkbox" ? checked : value,
+				[name]: value < 0 ? 0 : value,
+				price: 0,
+			}));
+		} else {
+			setIsPriceDisabled(false);
+			setFormData((prevFormData) => ({
+				...prevFormData,
+				[name]: type === "checkbox" ? checked : value,
+				[name]: value < 0 ? 0 : value,
+			}));
+		}
 	};
 
 	const handleSubmit = async (event) => {
@@ -303,6 +324,7 @@ const UploadDocument = () => {
 										</Grid>
 										<Grid item xs={12} sm={6}>
 											<TextField
+												disabled={isPriceDisabled}
 												label="Giá"
 												variant="outlined"
 												fullWidth
@@ -345,6 +367,9 @@ const UploadDocument = () => {
 												name="quantity"
 												value={formData.quantity}
 												onChange={handleChange}
+												inputProps={{
+													min: 1,
+												}}
 											/>
 										</Grid>
 										<Grid item xs={12}>
