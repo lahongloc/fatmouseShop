@@ -20,10 +20,6 @@ const HomePage = () => {
 		loadPosts();
 	}, []);
 
-	const handleViewDetail = () => {
-		console.log("haha");
-	};
-
 	return (
 		<>
 			<Container sx={{ display: "flex", flexWrap: "wrap" }}>

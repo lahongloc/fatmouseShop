@@ -8,6 +8,8 @@ import {
 	Avatar,
 	Divider,
 	IconButton,
+	Snackbar,
+	Button,
 } from "@mui/material";
 import { PieChart, Pie, Cell, Tooltip, Label } from "recharts";
 import { DataGrid } from "@mui/x-data-grid";
@@ -17,8 +19,37 @@ import { UserContext } from "../../App";
 import APIs, { endpoints } from "../../configs/APIs";
 import cookie from "react-cookies";
 import CreateIcon from "@mui/icons-material/Create";
+import CloseIcon from "@mui/icons-material/Close";
 
 const UserInfo = () => {
+	const handleClick = () => {
+		setOpen(true);
+	};
+
+	const handleClose = (event, reason) => {
+		if (reason === "clickaway") {
+			return;
+		}
+
+		setOpen(false);
+	};
+	const [open, setOpen] = React.useState(false);
+	const action = (
+		<React.Fragment>
+			<Button color="secondary" size="small" onClick={handleClose}>
+				PHỤC HỒI
+			</Button>
+			<IconButton
+				size="small"
+				aria-label="close"
+				color="inherit"
+				onClick={handleClose}
+			>
+				<CloseIcon fontSize="small" />
+			</IconButton>
+		</React.Fragment>
+	);
+
 	const columns = [
 		{
 			field: "image",
@@ -63,12 +94,7 @@ const UserInfo = () => {
 					>
 						<VisibilityIcon />
 					</IconButton>
-					<IconButton
-						color="success"
-						onClick={() =>
-							alert(`Xóa tài liệu ${params.row.documentName}`)
-						}
-					>
+					<IconButton color="success" onClick={handleClick}>
 						<DeleteIcon />
 					</IconButton>
 				</Box>
@@ -398,6 +424,13 @@ const UserInfo = () => {
 										</Box>
 									</Box>
 								</Box>
+								<Snackbar
+									open={open}
+									autoHideDuration={6000}
+									onClose={handleClose}
+									message="Đã xóa tài liệu"
+									action={action}
+								/>
 							</Paper>
 						</Grid>
 

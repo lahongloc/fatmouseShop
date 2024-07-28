@@ -22,6 +22,7 @@ export const endpoints = {
 	"get-buyer-total-price": "/user/get-buyer-total-price",
 	"get-transaction-statistic": "/user/receipts-statistic",
 	"get-customer-orders": "/receipt/get-customer-orders",
+	"delete-post": "/post/delete-post",
 };
 
 export default axios.create({

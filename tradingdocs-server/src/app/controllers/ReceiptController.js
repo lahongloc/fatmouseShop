@@ -185,18 +185,46 @@ class ReceiptController {
 	async getReceiptsByBuyerId(req, res, next) {
 		try {
 			const buyer = await User.findById(req.user.user.id);
-			const receipts = await Receipt.find({ buyerId: buyer })
+			const receipts = await Receipt.find({
+				buyerId: buyer,
+			})
 				.populate({
-					path: "transactionType", // Populate the transactionType field
-					select: "-__v", // Optionally exclude the __v field from the result
+					path: "transactionType",
+					select: "-__v",
 				})
-				.populate({
-					path: "postId", // Populate the postId field if needed
-					select: "-__v", // Optionally exclude the __v field from the result
-				})
-				.sort({ createdAt: -1 });
+				.sort({ createdAt: -1 })
+				.lean(); // Use lean for performance, if you're not modifying the documents
 
-			res.json(receipts);
+			// Extract postIds from the receipts
+			const postIds = receipts
+				.map((receipt) => receipt.postId)
+				.map((postId) => postId.toString());
+
+			// const postIdString = postIds[0].toString();
+			// Fetch posts, including deleted ones
+			const deletedPosts = await Post.findWithDeleted({
+				deleted: true,
+				_id: { $in: postIds },
+			});
+			const unDeletedPosts = await Post.find({
+				_id: { $in: postIds },
+			});
+
+			const posts = deletedPosts.concat(unDeletedPosts);
+
+			// Create a map of posts by their IDs for easy lookup
+			const postMap = posts.reduce((acc, post) => {
+				acc[post._id] = post;
+				return acc;
+			}, {});
+
+			// // Assign the corresponding posts to the receipts
+			const populatedReceipts = receipts.map((receipt) => {
+				const post = postMap[receipt.postId];
+				return { ...receipt, postId: post || null };
+			});
+
+			res.json(populatedReceipts);
 		} catch (err) {
 			console.error("Error retrieving receipts:", err);
 			throw err;
@@ -207,25 +235,37 @@ class ReceiptController {
 		// res.json(req.user.user);
 
 		try {
-			// Step 1: Fetch posts by user ID
-			const posts = await Post.find({
-				userId: new ObjectId(req.user.user.id),
+			const deletedPosts = await Post.findWithDeleted({
+				deleted: true,
+				userId: req.user.user.id,
+			});
+			const unDeletedPosts = await Post.find({
+				userId: req.user.user.id,
 			});
 
-			// res.json(posts);
+			const posts = deletedPosts.concat(unDeletedPosts);
+			const postIds = posts.map((post) => post._id.toString());
+			const receipts = await Receipt.find({
+				postId: { $in: postIds },
+			})
+				.populate({
+					path: "transactionType",
+					select: "-__v",
+				})
+				.sort({ createdAt: -1 })
+				.lean();
 
-			// // Step 2: Extract post IDs
-			const postIds = posts.map((post) => post._id);
+			const postMap = posts.reduce((acc, post) => {
+				acc[post._id] = post;
+				return acc;
+			}, {});
 
-			// // Step 3: Fetch receipts by post IDs
-			const receipts = await Receipt.find({ postId: { $in: postIds } })
-				.populate("buyerId")
-				.populate("transactionType")
-				.populate("postId")
-				.sort({ createdAt: -1 });
+			const populatedReceipts = receipts.map((receipt) => {
+				const post = postMap[receipt.postId];
+				return { ...receipt, postId: post || null };
+			});
 
-			res.json(receipts);
-			// return receipts;
+			res.json(populatedReceipts);
 		} catch (error) {
 			console.error("Error fetching receipts by user ID:", error);
 			throw error;

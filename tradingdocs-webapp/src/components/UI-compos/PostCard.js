@@ -28,6 +28,8 @@ import PriceDisplay from "./PriceDisplay";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../App";
 import IntroDivider from "./IntroDivider";
+import APIs, { endpoints } from "../../configs/APIs";
+import cookie from "react-cookies";
 
 function formatDate(dateString) {
 	const date = new Date(dateString);
@@ -49,19 +51,34 @@ const PostCard = ({ ...props }) => {
 	const [anchorEl, setAnchorEl] = useState(null);
 
 	const handleMenuClick = (event) => {
-		// console.log()
 		setAnchorEl(event.currentTarget);
 	};
 
 	const handleMenuClose = () => {
 		setAnchorEl(null);
-		const url = `/update-document/?postId=${props.postId}`;
-		window.open(url, "_blank");
+		// const url = `/update-document/?postId=${props.postId}`;
+		// window.open(url, "_blank");
 	};
 
 	const handleViewDetail = () => {
 		const url = `/post-detail/?postId=${props.postId}`;
 		window.open(url, "_blank");
+	};
+
+	const deletePost = async () => {
+		try {
+			const res = await APIs.delete(
+				`${endpoints["delete-post"]}?postId=${props.postId}`,
+				{
+					headers: {
+						Authorization: cookie.load("token"),
+					},
+				},
+			);
+			console.log("delete result: ", res.data);
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	const rootStyle = {
@@ -106,9 +123,7 @@ const PostCard = ({ ...props }) => {
 								<MenuItem onClick={handleMenuClose}>
 									Chỉnh sửa
 								</MenuItem>
-								<MenuItem onClick={handleMenuClose}>
-									Xóa
-								</MenuItem>
+								{/* <MenuItem onClick={deletePost}>Xóa</MenuItem> */}
 							</Menu>
 						</div>
 					)

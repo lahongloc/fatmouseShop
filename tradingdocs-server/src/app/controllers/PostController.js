@@ -251,5 +251,12 @@ class PostController {
 			next(error);
 		}
 	}
+
+	// [DELETE] /post/delete-post
+	deletePost(req, res, next) {
+		Post.delete({ _id: req.query.postId })
+			.then(() => res.json("successful"))
+			.catch(next);
+	}
 }
 module.exports = new PostController();

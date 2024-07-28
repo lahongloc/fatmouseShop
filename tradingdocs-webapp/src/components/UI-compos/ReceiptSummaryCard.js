@@ -14,32 +14,34 @@ import { grey } from "@mui/material/colors";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
 
-const ReceiptSummaryCard = ({ receipt, link }) => {
+const ReceiptSummaryCard = ({ receipt = null, link }) => {
+	console.log("nưn: ", receipt);
 	const navigate = useNavigate();
 	return (
-		<Paper
-			elevation={3}
-			sx={{
-				width: "500px",
-				margin: "auto",
-				mt: 1,
-				mb: 1,
-				borderRadius: "12px",
-				cursor: "pointer",
-				// backgroundColor: grey[50],
-			}}
-			onClick={() => {
-				navigate(link);
-			}}
-		>
-			<Card
+		receipt && (
+			<Paper
+				elevation={3}
 				sx={{
-					borderRadius: "8px",
-					overflow: "hidden",
-					position: "relative",
+					width: "500px",
+					margin: "auto",
+					mt: 1,
+					mb: 1,
+					borderRadius: "12px",
+					cursor: "pointer",
+					// backgroundColor: grey[50],
+				}}
+				onClick={() => {
+					navigate(link);
 				}}
 			>
-				{/* <Tooltip title="Thêm tùy chọn">
+				<Card
+					sx={{
+						borderRadius: "8px",
+						overflow: "hidden",
+						position: "relative",
+					}}
+				>
+					{/* <Tooltip title="Thêm tùy chọn">
 					<IconButton
 						sx={{
 							position: "absolute",
@@ -52,69 +54,73 @@ const ReceiptSummaryCard = ({ receipt, link }) => {
 					</IconButton>
 				</Tooltip> */}
 
-				<CardContent>
-					<Grid container spacing={2}>
-						<Grid item xs={4}>
-							<Avatar
-								src={receipt.postId.image}
-								variant="rounded"
-								sx={{
-									width: 120,
-									height: 120,
-									borderRadius: "12px",
-								}}
-							/>
-						</Grid>
-						<Grid item xs={8}>
-							<Badge
-								badgeContent={receipt.transactionType.name}
-								color="info"
-								sx={{
-									textTransform: "uppercase",
-									backgroundColor: grey[300],
-									color: grey[800],
-									borderRadius: "8px",
-								}}
-							>
-								<Typography
+					<CardContent>
+						<Grid container spacing={2}>
+							<Grid item xs={4}>
+								<Avatar
+									src={receipt.postId.image}
+									variant="rounded"
 									sx={{
-										mt: 0.5,
-										fontWeight: 600,
-										pr: 0.75,
-										pl: 0.75,
+										width: 120,
+										height: 120,
+										borderRadius: "12px",
 									}}
-									variant="h6"
-									gutterBottom
-									color={grey[800]}
+								/>
+							</Grid>
+							<Grid item xs={8}>
+								<Badge
+									badgeContent={receipt.transactionType.name}
+									color="info"
+									sx={{
+										textTransform: "uppercase",
+										backgroundColor: grey[300],
+										color: grey[800],
+										borderRadius: "8px",
+									}}
 								>
-									{receipt.postId.documentName}
+									<Typography
+										sx={{
+											mt: 0.5,
+											fontWeight: 600,
+											pr: 0.75,
+											pl: 0.75,
+										}}
+										variant="h6"
+										gutterBottom
+										color={grey[800]}
+									>
+										{receipt.postId.documentName}
+									</Typography>
+								</Badge>
+								<Typography
+									sx={{ mt: 2 }}
+									variant="body2"
+									color={grey[700]}
+								>
+									Số lượng: {receipt.quantity}
 								</Typography>
-							</Badge>
-							<Typography
-								sx={{ mt: 2 }}
-								variant="body2"
-								color={grey[700]}
-							>
-								Số lượng: {receipt.quantity}
-							</Typography>
-							<Typography variant="body2" color={grey[700]}>
-								Tổng giá:{" "}
-								{receipt.totalPrice.toLocaleString("vi-VN", {
-									style: "currency",
-									currency: "VND",
-								})}
-							</Typography>
-							<Typography variant="body2" color={grey[700]}>
-								Ngày giao dịch:{" "}
-								{new Date(receipt.createdAt).toLocaleDateString(
-									"vi-VN",
-								)}
-							</Typography>
+								<Typography variant="body2" color={grey[700]}>
+									Tổng giá:{" "}
+									{receipt.totalPrice.toLocaleString(
+										"vi-VN",
+										{
+											style: "currency",
+											currency: "VND",
+										},
+									)}
+								</Typography>
+								<Typography variant="body2" color={grey[700]}>
+									Ngày giao dịch:{" "}
+									{new Date(
+										receipt.createdAt,
+									).toLocaleDateString("vi-VN")}
+								</Typography>
+							</Grid>
 						</Grid>
-					</Grid>
-				</CardContent>
-			</Card>
-		</Paper>
+					</CardContent>
+				</Card>
+			</Paper>
+		)
 	);
 };
 

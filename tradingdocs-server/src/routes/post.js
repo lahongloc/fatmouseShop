@@ -23,5 +23,6 @@ router.get(
 	authenticateToken,
 	postController.getPostsByUserId,
 );
+router.delete("/delete-post", authenticateToken, postController.deletePost);
 
 module.exports = router;

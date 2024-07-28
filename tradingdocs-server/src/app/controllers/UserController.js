@@ -285,7 +285,7 @@ class UserController {
 					},
 				},
 			]);
-
+			// console.log(totalPrices);
 			res.json(totalPrices);
 		} catch (error) {
 			console.error(error);

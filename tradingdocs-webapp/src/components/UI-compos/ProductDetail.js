@@ -63,7 +63,7 @@ const ProductDetail = ({ product }) => {
 
 	return (
 		<Container maxWidth="lg" sx={{ marginTop: 14 }}>
-			<Paper elevation={3} sx={{ padding: 4 }}>
+			<Paper elevation={3} sx={{ padding: 4, pt: "4.5rem" }}>
 				<Grid container spacing={10}>
 					<Grid item xs={12} md={6}>
 						<Box sx={{ textAlign: "center" }}>

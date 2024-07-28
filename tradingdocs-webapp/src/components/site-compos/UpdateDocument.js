@@ -38,6 +38,8 @@ const UpdateDocument = ({ match }) => {
 		error: false,
 	});
 
+	const [isPriceDisabled, setIsPriceDisabled] = useState(false);
+
 	const loadCategories = async () => {
 		try {
 			const res = await APIs.get(endpoints["get-categories"]);
@@ -95,6 +97,18 @@ const UpdateDocument = ({ match }) => {
 
 	useEffect(() => {
 		if (document) {
+			const postTypeSelected = postTypes.find(
+				(postType) => postType._id == document.postType._id,
+			);
+
+			if (
+				postTypeSelected?.type === "EXCHANGE" ||
+				postTypeSelected?.type === "GIFT"
+			) {
+				setIsPriceDisabled(true);
+			} else {
+				setIsPriceDisabled(false);
+			}
 			setFormData({
 				documentName: document.documentName,
 				lecturer: document.lecturer,
@@ -110,8 +124,30 @@ const UpdateDocument = ({ match }) => {
 		}
 	}, [document]);
 
+	useEffect(() => {
+		if (isPriceDisabled) {
+			setFormData((prev) => {
+				return { ...prev, price: 0 };
+			});
+		}
+	}, [isPriceDisabled]);
+
 	const handleChange = (event) => {
 		const { name, value } = event.target;
+		if (name === "postType") {
+			const postTypeSelected = postTypes.find(
+				(postType) => postType._id == value,
+			);
+			if (
+				postTypeSelected?.type === "EXCHANGE" ||
+				postTypeSelected?.type === "GIFT"
+			) {
+				console.log("name la: ", postTypeSelected);
+				setIsPriceDisabled(true);
+			} else {
+				setIsPriceDisabled(false);
+			}
+		}
 		setFormData((prevFormData) => ({
 			...prevFormData,
 			[name]: value,
@@ -477,6 +513,9 @@ const UpdateDocument = ({ match }) => {
 												</Grid>
 												<Grid item xs={12} sm={6}>
 													<TextField
+														disabled={
+															isPriceDisabled
+														}
 														label="Giá"
 														variant="outlined"
 														fullWidth

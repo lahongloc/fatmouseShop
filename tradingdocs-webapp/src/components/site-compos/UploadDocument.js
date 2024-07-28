@@ -71,33 +71,34 @@ const UploadDocument = () => {
 	});
 
 	const [isPriceDisabled, setIsPriceDisabled] = useState(false);
+	useEffect(() => {
+		if (isPriceDisabled) {
+			setFormData((prev) => {
+				return { ...prev, price: 0 };
+			});
+		}
+	}, [isPriceDisabled]);
 
 	const handleChange = (event) => {
 		const { name, value, type, checked } = event.target;
-		// if (value == "669c85331618f7d1287bc33e")
-		// 	console.log("gia tri la: ", postTypes);
-		const postTypeSelected = postTypes.find(
-			(postType) => postType._id == value,
-		);
-		if (
-			postTypeSelected?.type === "EXCHANGE" ||
-			postTypeSelected?.type === "GIFT"
-		) {
-			setIsPriceDisabled(true);
-			setFormData((prevFormData) => ({
-				...prevFormData,
-				[name]: type === "checkbox" ? checked : value,
-				[name]: value < 0 ? 0 : value,
-				price: 0,
-			}));
-		} else {
-			setIsPriceDisabled(false);
-			setFormData((prevFormData) => ({
-				...prevFormData,
-				[name]: type === "checkbox" ? checked : value,
-				[name]: value < 0 ? 0 : value,
-			}));
+		if (name === "postTypeId") {
+			const postTypeSelected = postTypes.find(
+				(postType) => postType._id == value,
+			);
+			if (
+				postTypeSelected?.type === "EXCHANGE" ||
+				postTypeSelected?.type === "GIFT"
+			) {
+				setIsPriceDisabled(true);
+			} else {
+				setIsPriceDisabled(false);
+			}
 		}
+		setFormData((prevFormData) => ({
+			...prevFormData,
+			[name]: type === "checkbox" ? checked : value,
+			[name]: value < 0 ? 0 : value,
+		}));
 	};
 
 	const handleSubmit = async (event) => {

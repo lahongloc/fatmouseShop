@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
-const TextTruncateExpand = ({ text }) => {
+const TextTruncateExpand = ({
+	text,
+	maxLength = 28,
+	canExpand = true,
+	...props
+}) => {
 	const [isExpanded, setIsExpanded] = useState(false);
 
 	const handleToggle = () => {
@@ -11,13 +16,13 @@ const TextTruncateExpand = ({ text }) => {
 
 	return (
 		<div>
-			<Typography>
+			<Typography {...props.sx}>
 				{isExpanded
 					? text
-					: text.length > 28
-					? `${text.substring(0, 28)}...`
+					: text.length > maxLength
+					? `${text.substring(0, maxLength)}..`
 					: text}
-				{text.length > 28 && (
+				{canExpand && text.length > maxLength && (
 					<span
 						style={{ color: "blue", cursor: "pointer" }}
 						onClick={handleToggle}

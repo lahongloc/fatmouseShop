@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const AutoIncrement = require("mongoose-sequence")(mongoose);
 const Schema = mongoose.Schema;
 const bcrypt = require("bcryptjs");
+const mongooseDelete = require("mongoose-delete");
 
 const postSchema = new Schema(
 	{
@@ -40,6 +41,11 @@ const postSchema = new Schema(
 // postSchema.virtual("id").get(function () {
 // 	return this._id.toHexString();
 // });
+
+postSchema.plugin(mongooseDelete, {
+	deletedAt: true,
+	overrideMethods: "all",
+});
 
 postSchema.set("toJSON", {
 	virtuals: true,

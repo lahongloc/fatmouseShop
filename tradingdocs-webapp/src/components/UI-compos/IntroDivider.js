@@ -23,7 +23,11 @@ export default function IntroDivider({ ...props }) {
 						variant="h7"
 						component="div"
 					>
-						{props.documentName}
+						<TextTruncateExpand
+							canExpand={false}
+							sx={{ textTransform: "uppercase", fontWeight: 700 }}
+							text={props.documentName}
+						/>
 					</Typography>
 				</Stack>
 				<Stack
