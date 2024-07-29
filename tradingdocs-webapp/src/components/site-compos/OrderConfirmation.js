@@ -31,7 +31,7 @@ import NotFoundPage from "../UI-compos/NotFoundPage ";
 import CountdownProgress from "../UI-compos/CountdownProgress ";
 
 const StyledContainer = styled(Container)(({ theme }) => ({
-	marginTop: theme.spacing(10),
+	marginTop: theme.spacing(15),
 	marginBottom: theme.spacing(4),
 }));
 

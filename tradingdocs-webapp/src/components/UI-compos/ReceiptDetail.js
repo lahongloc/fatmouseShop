@@ -23,6 +23,7 @@ import ContactEmergencyOutlinedIcon from "@mui/icons-material/ContactEmergencyOu
 import ContactMailOutlinedIcon from "@mui/icons-material/ContactMailOutlined";
 import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import { styled } from "@mui/system";
+import { useNavigate } from "react-router-dom";
 
 const CustomChip = styled(Chip)(({ theme }) => ({
 	marginRight: theme.spacing(1),
@@ -30,8 +31,10 @@ const CustomChip = styled(Chip)(({ theme }) => ({
 }));
 
 const ReceiptDetail = ({ orderData }) => {
+	const navigate = useNavigate();
+
 	return (
-		<Container maxWidth="md" sx={{ mt: 5 }}>
+		<Container maxWidth="md" sx={{ mt: 15 }}>
 			<Typography
 				variant="h4"
 				gutterBottom
@@ -60,6 +63,12 @@ const ReceiptDetail = ({ orderData }) => {
 							height: 160,
 							padding: 2,
 							objectFit: "cover",
+							cursor: "pointer",
+						}}
+						onClick={() => {
+							navigate(
+								`/post-detail/?postId=${orderData.post._id}`,
+							);
 						}}
 						image={orderData.post.image}
 						alt={orderData.post.documentName}

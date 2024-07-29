@@ -65,7 +65,18 @@ const SignUp = () => {
 	};
 
 	return (
-		<Grid sx={{ padding: 10, paddingRight: 15 }} container spacing={5}>
+		<Grid
+			sx={{
+				padding: 10,
+				paddingRight: 15,
+				mt: 7,
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+			}}
+			container
+			spacing={5}
+		>
 			{loading && <LinearBuffer />}
 			{/* Left Side: Title */}
 			<Grid item xs={10} sm={5}>

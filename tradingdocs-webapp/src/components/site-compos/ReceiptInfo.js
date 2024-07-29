@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ReceiptDetail from "../UI-compos/ReceiptDetail";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import APIs, { endpoints } from "../../configs/APIs";
 import cookie from "react-cookies";
 

@@ -252,6 +252,10 @@ class ReceiptController {
 					path: "transactionType",
 					select: "-__v",
 				})
+				.populate({
+					path: "buyerId",
+					select: "-__v",
+				})
 				.sort({ createdAt: -1 })
 				.lean();
 

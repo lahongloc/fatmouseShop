@@ -122,10 +122,6 @@ const UploadDocument = () => {
 				setSuccess(true);
 			}, 5000);
 		}
-
-		// Handle form submission logic here
-		// console.log(formData); // Log the form data
-		// You can perform further actions like API calls here
 	};
 
 	return (
@@ -134,7 +130,7 @@ const UploadDocument = () => {
 			spacing={2}
 			style={{ width: "60%", height: "80%", margin: "auto" }}
 		>
-			<Grid item xs={12}>
+			<Grid sx={{ mt: 15 }} item xs={12}>
 				{loading && <LinearBuffer />}
 				<Card variant="outlined">
 					<CardContent>

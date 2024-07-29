@@ -13,7 +13,9 @@ import {
 	Fade,
 	Chip,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 const OrderDetailCard = ({ orderData }) => {
+	const navigate = useNavigate();
 	const theme = useTheme();
 	return (
 		<Box
@@ -228,6 +230,11 @@ const OrderDetailCard = ({ orderData }) => {
 										<Avatar
 											variant="square"
 											src={orderData.postId.image}
+											onClick={() => {
+												navigate(
+													`/post-detail/?postId=${orderData.postId._id}`,
+												);
+											}}
 											sx={{
 												width: "100%",
 												height: "auto",
@@ -236,6 +243,7 @@ const OrderDetailCard = ({ orderData }) => {
 												"&:hover": {
 													transform: "scale(1.1)",
 												},
+												cursor: "pointer",
 											}}
 										/>
 									</Grid>

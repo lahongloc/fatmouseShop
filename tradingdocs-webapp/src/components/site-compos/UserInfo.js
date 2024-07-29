@@ -22,8 +22,45 @@ import CreateIcon from "@mui/icons-material/Create";
 import CloseIcon from "@mui/icons-material/Close";
 
 const UserInfo = () => {
-	const handleClick = () => {
-		setOpen(true);
+	const [deletedDocumentId, setDeletedDocumentId] = useState("");
+	const handleDeleteDocument = async (documentId) => {
+		try {
+			const res = await APIs.delete(
+				`${endpoints["delete-post"]}?postId=${documentId}`,
+				{
+					headers: {
+						Authorization: cookie.load("token"),
+					},
+				},
+			);
+
+			if (res.status === 200) {
+				setDeletedDocumentId(documentId);
+				setOpen(true);
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const handleRestoreDocument = async () => {
+		try {
+			const res = await APIs.patch(
+				`${endpoints["restore-post"]}?postId=${deletedDocumentId}`,
+				{}, // Empty object for the request body if you don't have any data to send
+				{
+					headers: {
+						Authorization: cookie.load("token"),
+					},
+				},
+			);
+			if (res.status === 200) {
+				setDeletedDocumentId("");
+				setOpen(false);
+			}
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	const handleClose = (event, reason) => {
@@ -36,7 +73,11 @@ const UserInfo = () => {
 	const [open, setOpen] = React.useState(false);
 	const action = (
 		<React.Fragment>
-			<Button color="secondary" size="small" onClick={handleClose}>
+			<Button
+				color="secondary"
+				size="small"
+				onClick={handleRestoreDocument}
+			>
 				PHỤC HỒI
 			</Button>
 			<IconButton
@@ -94,7 +135,10 @@ const UserInfo = () => {
 					>
 						<VisibilityIcon />
 					</IconButton>
-					<IconButton color="success" onClick={handleClick}>
+					<IconButton
+						color="success"
+						onClick={() => handleDeleteDocument(params.row.id)}
+					>
 						<DeleteIcon />
 					</IconButton>
 				</Box>
@@ -162,7 +206,7 @@ const UserInfo = () => {
 
 	useEffect(() => {
 		loadStats();
-	}, []);
+	}, [deletedDocumentId]);
 
 	useEffect(() => {
 		setRows(
@@ -180,7 +224,7 @@ const UserInfo = () => {
 		<>
 			{success && (
 				<Container maxWidth="lg">
-					<Grid container spacing={7} sx={{ mt: 2 }}>
+					<Grid container spacing={7} sx={{ mt: 10 }}>
 						<Grid item xs={12} md={5}>
 							<Paper
 								elevation={3}
@@ -426,7 +470,7 @@ const UserInfo = () => {
 								</Box>
 								<Snackbar
 									open={open}
-									autoHideDuration={6000}
+									autoHideDuration={30000}
 									onClose={handleClose}
 									message="Đã xóa tài liệu"
 									action={action}

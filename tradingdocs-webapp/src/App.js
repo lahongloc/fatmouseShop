@@ -18,6 +18,7 @@ import UserInfo from "./components/site-compos/UserInfo";
 import ReceiptsList from "./components/site-compos/ReceiptsList";
 import Footer from "./commons/Footer";
 import CustomerOrders from "./components/site-compos/CustomerOrders";
+import AppAppBar from "./components/site-compos/AppAppBar";
 
 export const UserContext = createContext();
 
@@ -62,7 +63,8 @@ function App() {
 	return (
 		<BrowserRouter>
 			<UserContext.Provider value={[user, dispatch]} className="App">
-				<Header />
+				<AppAppBar />
+				{/* <Header /> */}
 				{/* <Routes>
 					{isNormalUser(user) && (
 						<Route
@@ -116,6 +118,7 @@ function App() {
 					<Route path="/sign-up" element={<SignUp />} />
 					<Route path="/" element={<HomePage />} />
 					<Route path="/post-detail" element={<DocumentDetail />} />
+					<Route path="/test" element={<AppAppBar />} />
 				</Routes>
 				<Footer />
 			</UserContext.Provider>

@@ -63,7 +63,7 @@ const ReceiptsList = () => {
 	}
 	return (
 		<>
-			<Container sx={{ pt: 5 }}>
+			<Container sx={{ pt: 5, mt: 15 }}>
 				<Grid
 					container
 					spacing={15}

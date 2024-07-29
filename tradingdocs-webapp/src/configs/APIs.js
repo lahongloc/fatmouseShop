@@ -23,6 +23,7 @@ export const endpoints = {
 	"get-transaction-statistic": "/user/receipts-statistic",
 	"get-customer-orders": "/receipt/get-customer-orders",
 	"delete-post": "/post/delete-post",
+	"restore-post": "/post/restore-post",
 };
 
 export default axios.create({

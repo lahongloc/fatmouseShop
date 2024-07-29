@@ -279,7 +279,7 @@ const UpdateDocument = ({ match }) => {
 					spacing={2}
 					style={{ width: "60%", height: "80%", margin: "auto" }}
 				>
-					<Grid item xs={12}>
+					<Grid sx={{ mt: 15 }} item xs={12}>
 						{loading && <LinearBuffer />}
 						<Card variant="outlined">
 							<CardContent>

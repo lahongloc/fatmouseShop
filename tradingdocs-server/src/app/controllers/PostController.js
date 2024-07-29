@@ -93,15 +93,31 @@ class PostController {
 	// [GET] /post/get-posts
 	async getPosts(req, res, next) {
 		try {
-			const postId = req.query.postId
-				? new ObjectId(req.query.postId)
-				: null;
+			// const postId = req.query.postId
+			// 	? new ObjectId(req.query.postId)
+			// 	: null;
 
 			// const match = postId
 			// 	? { $match: { _id: postId }, quantity: { $gt: 0 } }
 			// 	: { $match: {}, quantity: { $gt: 0 } };
 
-			const match = postId ? { $match: { _id: postId } } : { $match: {} };
+			// const match = postId ? { $match: { _id: postId } } : { $match: {} };
+			const searchKeyword = req.query.search || ""; // Lấy từ khóa tìm kiếm từ query parameters
+			const postId = req.query.postId;
+			const matchConditions = [];
+			if (postId) {
+				matchConditions.push({ _id: new ObjectId(postId) });
+			}
+			if (searchKeyword) {
+				matchConditions.push({
+					documentName: { $regex: searchKeyword, $options: "i" }, // Tìm kiếm không phân biệt hoa thường
+				});
+			}
+			const match =
+				matchConditions.length > 0
+					? { $match: { $and: matchConditions } }
+					: { $match: {} };
+
 			let posts = await Post.aggregate([
 				match,
 				{
@@ -255,8 +271,16 @@ class PostController {
 	// [DELETE] /post/delete-post
 	deletePost(req, res, next) {
 		Post.delete({ _id: req.query.postId })
-			.then(() => res.json("successful"))
+			.then(() => res.status(200).json("successful"))
+			.catch(next);
+	}
+
+	// [PATCH] /post/restore-post
+	restorePost(req, res, next) {
+		Post.restore({ _id: req.query.postId })
+			.then(() => res.status(200).json("successful"))
 			.catch(next);
 	}
 }
+
 module.exports = new PostController();

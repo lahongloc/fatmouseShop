@@ -22,7 +22,7 @@ const HomePage = () => {
 
 	return (
 		<>
-			<Container sx={{ display: "flex", flexWrap: "wrap" }}>
+			<Container sx={{ display: "flex", flexWrap: "wrap", mt: 15 }}>
 				{/* <h1>xin chao</h1> */}
 				{posts.map((post, index) => {
 					return (

@@ -56,8 +56,8 @@ const PostCard = ({ ...props }) => {
 
 	const handleMenuClose = () => {
 		setAnchorEl(null);
-		// const url = `/update-document/?postId=${props.postId}`;
-		// window.open(url, "_blank");
+		const url = `/update-document/?postId=${props.postId}`;
+		window.open(url, "_blank");
 	};
 
 	const handleViewDetail = () => {

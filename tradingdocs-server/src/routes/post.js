@@ -24,5 +24,6 @@ router.get(
 	postController.getPostsByUserId,
 );
 router.delete("/delete-post", authenticateToken, postController.deletePost);
+router.patch("/restore-post", authenticateToken, postController.restorePost);
 
 module.exports = router;
