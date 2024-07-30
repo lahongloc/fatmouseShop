@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 import { styled } from "@mui/system";
+import CachedIcon from "@mui/icons-material/Cached";
 
 const SearchContainer = styled(Box)({
 	display: "flex",
@@ -55,7 +56,7 @@ const DropdownContainer = styled(Box)({
 	display: "flex",
 	marginTop: 10,
 	padding: "5px 10px",
-	gap: 10, // Reduce the spacing between dropdowns
+	gap: 10,
 });
 
 const CustomSelect = styled(FormControl)({
@@ -66,9 +67,8 @@ const CustomSelect = styled(FormControl)({
 	},
 });
 
-const UpdateImage = () => {
+const LevitatedSearchBox = ({ ...props }) => {
 	const [isOpen, setIsOpen] = useState(false);
-	const searchBoxRef = useRef(null);
 
 	const [formData, setFormData] = useState({
 		postType: "",
@@ -79,16 +79,6 @@ const UpdateImage = () => {
 
 	const handleSearchIconClick = () => {
 		setIsOpen((prev) => !prev);
-		console.log("haha: ", isOpen);
-	};
-
-	const handleClickOutside = (event) => {
-		if (
-			searchBoxRef.current &&
-			!searchBoxRef.current.contains(event.target)
-		) {
-			setIsOpen(false);
-		}
 	};
 
 	const handleScroll = () => {
@@ -96,16 +86,19 @@ const UpdateImage = () => {
 	};
 
 	useEffect(() => {
-		document.addEventListener("mousedown", handleClickOutside);
-		window.addEventListener("scroll", handleScroll);
-		return () => {
-			document.removeEventListener("mousedown", handleClickOutside);
-			window.removeEventListener("scroll", handleScroll);
-		};
-	}, []);
+		console.log(formData);
+		props.searchSubmit(formData);
+	}, [formData]);
+
+	// useEffect(() => {
+	// 	window.addEventListener("scroll", handleScroll);
+	// 	return () => {
+	// 		window.removeEventListener("scroll", handleScroll);
+	// 	};
+	// }, []);
 
 	return (
-		<SearchContainer ref={searchBoxRef} sx={{ mt: 15 }}>
+		<SearchContainer sx={{ mt: 15 }}>
 			<SearchIconWrapper onClick={handleSearchIconClick}>
 				<SearchIcon />
 			</SearchIconWrapper>
@@ -119,7 +112,7 @@ const UpdateImage = () => {
 								searchContent: e.target.value,
 							}));
 						}}
-						placeholder="Search..."
+						placeholder="Nhập tên tài liệu..."
 					/>
 					<DropdownContainer>
 						<CustomSelect variant="outlined">
@@ -135,11 +128,18 @@ const UpdateImage = () => {
 								inputProps={{ "aria-label": "Post Type" }}
 							>
 								<MenuItem value="">
-									<em>Post Type</em>
+									<em>Loại giao dịch</em>
 								</MenuItem>
-								<MenuItem value="Bán">Bán</MenuItem>
-								<MenuItem value="Trao đổi">Trao đổi</MenuItem>
-								<MenuItem value="Tặng">Tặng</MenuItem>
+								{props?.postTypes.map((postType, index) => {
+									return (
+										<MenuItem
+											key={index}
+											value={postType._id}
+										>
+											{postType.name}
+										</MenuItem>
+									);
+								})}
 							</Select>
 						</CustomSelect>
 						<CustomSelect variant="outlined">
@@ -155,14 +155,18 @@ const UpdateImage = () => {
 								inputProps={{ "aria-label": "Category" }}
 							>
 								<MenuItem value="">
-									<em>Category</em>
+									<em>Loại tài liệu</em>
 								</MenuItem>
-								<MenuItem value="Tài liệu gốc">
-									Tài liệu gốc
-								</MenuItem>
-								<MenuItem value="Tài liệu photo">
-									Tài liệu photo
-								</MenuItem>
+								{props?.categories.map((category, index) => {
+									return (
+										<MenuItem
+											key={index}
+											value={category._id}
+										>
+											{category.name}
+										</MenuItem>
+									);
+								})}
 							</Select>
 						</CustomSelect>
 						<CustomSelect variant="outlined">
@@ -175,15 +179,37 @@ const UpdateImage = () => {
 									}))
 								}
 								displayEmpty
-								inputProps={{ "aria-label": "Durability" }}
+								inputProps={{ "aria-label": "Category" }}
 							>
 								<MenuItem value="">
-									<em>Durability</em>
+									<em>Độ bền</em>
 								</MenuItem>
-								<MenuItem value="Mới">Mới</MenuItem>
-								<MenuItem value="Cũ">Cũ</MenuItem>
+								<MenuItem value={true}>
+									<em>Mới</em>
+								</MenuItem>
+								<MenuItem value={false}>
+									<em>Cũ</em>
+								</MenuItem>
 							</Select>
 						</CustomSelect>
+						<IconButton
+							onClick={() => {
+								setFormData({
+									postType: "",
+									category: "",
+									durability: "",
+									searchContent: "",
+								});
+							}}
+							sx={{
+								height: "2.5rem",
+								ml: "2rem",
+								mt: 1,
+								bgcolor: "#edf7ed",
+							}}
+						>
+							<CachedIcon />
+						</IconButton>
 					</DropdownContainer>
 				</SearchBox>
 			)}
@@ -191,4 +217,4 @@ const UpdateImage = () => {
 	);
 };
 
-export default UpdateImage;
+export default LevitatedSearchBox;

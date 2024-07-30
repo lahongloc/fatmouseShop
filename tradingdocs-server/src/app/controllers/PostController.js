@@ -102,16 +102,30 @@ class PostController {
 			// 	: { $match: {}, quantity: { $gt: 0 } };
 
 			// const match = postId ? { $match: { _id: postId } } : { $match: {} };
-			const searchKeyword = req.query.search || ""; // Lấy từ khóa tìm kiếm từ query parameters
+			const searchKeyword = req.query.search || "";
+			const postType = req.query.postType || "";
+			const durability = req.query.durability || "";
+			const category = req.query.category || "";
 			const postId = req.query.postId;
 			const matchConditions = [];
 			if (postId) {
 				matchConditions.push({ _id: new ObjectId(postId) });
 			}
+			if (postType) {
+				matchConditions.push({ postType: new ObjectId(postType) });
+			}
+
+			if (category) {
+				matchConditions.push({ category: new ObjectId(category) });
+			}
 			if (searchKeyword) {
 				matchConditions.push({
 					documentName: { $regex: searchKeyword, $options: "i" }, // Tìm kiếm không phân biệt hoa thường
 				});
+			}
+			if (durability) {
+				const boolDurability = durability === "true";
+				matchConditions.push({ durability: boolDurability });
 			}
 			const match =
 				matchConditions.length > 0

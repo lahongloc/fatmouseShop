@@ -35,6 +35,7 @@ const CustomerOrders = () => {
 			});
 
 			setOrders(res.data);
+			setCurrentOrder(res.data[0])
 			setSuccess(true);
 		} catch (err) {
 			setSuccess(false);
