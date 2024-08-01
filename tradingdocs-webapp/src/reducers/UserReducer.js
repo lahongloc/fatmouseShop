@@ -1,20 +1,24 @@
 import cookie from "react-cookies";
 import { LOGIN, LOGOUT } from "./actions";
 import { remove as removeCookie, load } from "react-cookies";
+import APIs, { endpoints } from "../configs/APIs";
 
-// const UserReducer = (currentState, action) => {
-// 	switch (action.type) {
-// 		case LOGIN:
-// 			return action.payload;
-// 		case LOGOUT:
-// 			console.log("đăng xuất");
-// 			cookie.remove("token");
-// 			cookie.remove("user");
-// 			return null;
-// 	}
+const signOut = async () => {
+	try {
+		const res = await APIs.get(endpoints["signOut"], {
+			credentials: "include",
+		});
 
-// 	return currentState;
-// };
+		if (res.status === 200) {
+			// Successfully logged out, redirect to login page or homepage
+			window.location.href = "/sign-in"; // Adjust the URL to your login page
+		} else {
+			console.error("Failed to log out");
+		}
+	} catch (err) {
+		console.error(err);
+	}
+};
 
 export const UserReducer = (current, action) => {
 	switch (action.type) {
@@ -31,11 +35,13 @@ export const UserReducer = (current, action) => {
 				path: "/",
 				domain: window.location.hostname,
 			});
+
 			console.log(
 				"Cookies removed:",
 				!cookie.load("user"),
 				!cookie.load("token"),
 			);
+			signOut();
 			return null;
 		default:
 			return current;

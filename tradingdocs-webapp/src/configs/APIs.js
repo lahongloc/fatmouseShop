@@ -24,6 +24,9 @@ export const endpoints = {
 	"get-customer-orders": "/receipt/get-customer-orders",
 	"delete-post": "/post/delete-post",
 	"restore-post": "/post/restore-post",
+	"refresh-token": "/user/refresh-token",
+	"google-auth": "/auth",
+	signOut: "/user/logout",
 };
 
 export default axios.create({

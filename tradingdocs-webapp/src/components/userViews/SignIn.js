@@ -19,6 +19,7 @@ import { LOGIN } from "../../reducers/actions";
 import LinearBuffer from "../UI-compos/LinearBuffer";
 import { Alert } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import GoogleIcon from "@mui/icons-material/Google";
 import {
 	save as saveCookie,
 	load,
@@ -72,6 +73,10 @@ export default function SignIn() {
 					domain: window.location.hostname,
 				});
 
+				saveCookie("refreshToken", res.data.refreshToken, {
+					path: "/",
+					domain: window.location.hostname,
+				});
 				const currentUser = await APIs.get(endpoints["current-user"], {
 					headers: {
 						Authorization: res.data.token,
@@ -180,8 +185,16 @@ export default function SignIn() {
 						</Button>
 						<Grid container>
 							<Grid item xs>
-								<Link href="#" variant="body2">
-									Quên mật khẩu?
+								<Link
+									sx={{
+										display: "flex",
+										alignItems: "center",
+									}}
+									href="http://localhost:3000/auth/google"
+									variant="body2"
+								>
+									{<GoogleIcon sx={{ mr: 1 }} />}
+									{" Google"}
 								</Link>
 							</Grid>
 							<Grid item>

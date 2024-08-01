@@ -1,16 +1,51 @@
 import { Box, Container } from "@mui/material";
 import PostCard from "../UI-compos/PostCard";
 import APIs, { endpoints } from "../../configs/APIs";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import LevitatedSearchBox from "../UI-compos/LevitatedSearchBox";
-import Draggable from "react-draggable";
+import cookie from "react-cookies";
+import {
+	save as saveCookie,
+	load,
+	remove as removeCookie,
+} from "react-cookies";
+import { UserContext } from "../../App";
+import { LOGIN } from "../../reducers/actions";
 
 const HomePage = () => {
+	const [user, dispatch] = useContext(UserContext);
 	const [posts, setPosts] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [postTypes, setPostTypes] = useState([]);
 	const [query, setQuery] = useState("");
 
+	const loadAouthUser = async () => {
+		try {
+			const token = cookie.load("token");
+			console.log("token la: ", token);
+			if (token) {
+				const currentUser = await APIs.get(endpoints["current-user"], {
+					headers: {
+						Authorization: token,
+					},
+				});
+				saveCookie("user", currentUser.data.user, {
+					path: "/",
+					domain: window.location.hostname,
+				});
+				dispatch({
+					type: LOGIN,
+					payload: currentUser.data.user,
+				});
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	useEffect(() => {
+		loadAouthUser();
+	}, []);
 	const loadCategories = async () => {
 		try {
 			const res = await APIs.get(endpoints["get-categories"]);
