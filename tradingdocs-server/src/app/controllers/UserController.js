@@ -6,6 +6,8 @@ const Receipt = require("../models/Receipt");
 const ObjectId = require("mongodb").ObjectId;
 
 const auth = require("../../config/auth/jwtAuth");
+const generateTokens = require("../middlewares/jwt/generateTokens");
+const client = require("../../config/database/redis/index");
 
 class UserController {
 	// [POST] /user/register
@@ -46,6 +48,7 @@ class UserController {
 
 	// [POST] /user/login
 	login(req, res, next) {
+		console.log("dang nhap ne");
 		const { username, password } = req.body;
 
 		User.findOne({ username })
@@ -77,20 +80,32 @@ class UserController {
 							},
 						};
 
-						return new Promise((resolve, reject) => {
-							jwt.sign(
-								payload,
-								auth.secret, // Use your own JWT secret key
-								{ expiresIn: "7d" }, // Token expires in 1 hour (optional)
-								(err, token) => {
-									if (err) reject(err);
-									resolve(token);
-								},
-							);
-						}).then((token) => {
-							// Return token and user info
-							res.json({ token });
-						});
+						generateTokens(payload)
+							.then(async (tokens) => {
+								console.log("rdis save: ", payload.user.id);
+								await client.set(
+									payload.user.id,
+									tokens.refreshToken,
+								);
+								const myKeyValue = await client.get(
+									payload.user.id,
+								);
+								console.log("da lưu la: ", myKeyValue);
+
+								res.json({
+									token: tokens.accessToken,
+									refreshToken: tokens.refreshToken,
+								});
+							})
+							.catch((error) => {
+								console.error(
+									"Error generating tokens: ",
+									error,
+								);
+								res.status(500).json({
+									error: "Internal Server Error",
+								});
+							});
 					});
 			})
 			.catch((err) => {
@@ -102,6 +117,52 @@ class UserController {
 	// [GET] /user/current-user
 	takeCurrentUser(req, res) {
 		res.json({ message: "Current user info", user: req.user });
+	}
+
+	// [POST] /user/refresh-token
+	async refreshUser(req, res, next) {
+		const { refreshToken } = req.cookies;
+		if (!refreshToken) {
+			return res.sendStatus(401);
+		}
+		const decoded = jwt.verify(refreshToken, auth.REFRESH_TOKEN_SECRET);
+
+		const storedRefreshToken = await client.get(decoded.user.id);
+		if (storedRefreshToken !== refreshToken) {
+			return res.sendStatus(403);
+		}
+		const payload = {
+			user: {
+				id: decoded.user.id,
+				username: decoded.user.username,
+				email: decoded.user.email,
+				hotline: decoded.user.hotline,
+				fullName: decoded.user.fullName,
+				role: decoded.user.role,
+				// Add more fields as needed
+			},
+		};
+
+		generateTokens(payload)
+			.then(async (tokens) => {
+				await client.set(
+					payload.user.id,
+					tokens.refreshToken,
+					"EX",
+					7 * 24 * 60 * 60,
+				);
+
+				res.json({
+					token: tokens.accessToken,
+					refreshToken: tokens.refreshToken,
+				});
+			})
+			.catch((error) => {
+				console.error("Error generating tokens: ", error);
+				res.status(500).json({
+					error: "Internal Server Error",
+				});
+			});
 	}
 
 	// [GET] /user/postType-statistic

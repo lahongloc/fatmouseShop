@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const authenticateToken = require("../app/middlewares/authenticateToken");
+const authenticateToken = require("../app/middlewares/jwt/authenticateToken");
 const upload = require("../app/middlewares/multer");
 
 const postController = require("../app/controllers/PostController");

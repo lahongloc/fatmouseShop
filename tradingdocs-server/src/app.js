@@ -1,21 +1,41 @@
+// Ensure this is at the very top
+require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const morgan = require("morgan");
 const methodOverride = require("method-override");
 const handlebars = require("express-handlebars");
 const bodyParser = require("body-parser");
-// const multer = require("multer");
+const session = require("express-session");
+const passport = require("passport");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const auth = require("./config/auth/jwtAuth");
 const app = express();
-const port = 3000;
+
+app.use(cookieParser(auth.secret));
+
+app.use(
+	session({
+		secret: process.env.SECRET_KEY,
+		resave: false,
+		saveUninitialized: true,
+	}),
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+const port = process.env.PORT || 3000;
 
 const Category = require("./app/models/Category");
 const PostType = require("./app/models/PostType");
 
 // CORS configuration
 const corsOptions = {
-	origin: "http://localhost:3001",
-	optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+	origin: process.env.ORIGIN,
+	credentials: true,
+	optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
@@ -24,7 +44,7 @@ app.use(cors(corsOptions));
 // const SortMiddleware = require("./app/middlewares/SortMiddleware");
 
 const route = require("./routes");
-const db = require("./config/database");
+const db = require("./models/index");
 
 // connect to db
 db.connect().then(() => {
