@@ -93,15 +93,6 @@ class PostController {
 	// [GET] /post/get-posts
 	async getPosts(req, res, next) {
 		try {
-			// const postId = req.query.postId
-			// 	? new ObjectId(req.query.postId)
-			// 	: null;
-
-			// const match = postId
-			// 	? { $match: { _id: postId }, quantity: { $gt: 0 } }
-			// 	: { $match: {}, quantity: { $gt: 0 } };
-
-			// const match = postId ? { $match: { _id: postId } } : { $match: {} };
 			const searchKeyword = req.query.search || "";
 			const postType = req.query.postType || "";
 			const durability = req.query.durability || "";

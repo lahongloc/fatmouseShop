@@ -1,11 +1,8 @@
 const mongoose = require("mongoose");
-const AutoIncrement = require("mongoose-sequence")(mongoose);
 const Schema = mongoose.Schema;
-const bcrypt = require("bcryptjs");
 
 const userSchema = new Schema(
 	{
-		// _id: Number,
 		fullName: { type: String, required: true },
 		gender: { type: Boolean },
 		username: { type: String, required: true, unique: true },
@@ -13,7 +10,6 @@ const userSchema = new Schema(
 			type: String,
 			validate: {
 				validator: function (value) {
-					// If googleId is not provided, password is required
 					if (!this.googleId && !value) {
 						return false;
 					}
@@ -30,22 +26,6 @@ const userSchema = new Schema(
 		googleId: { type: String },
 	},
 	{ timestamps: true },
-	// { _id: false, timestamps: true },
 );
-
-// userSchema.virtual("posts", {
-// 	ref: "Post",
-// 	localField: "_id",
-// 	foreignField: "userId",
-// });
-
-// userSchema.pre("save", async function (next) {
-// 	if (!this.isModified("password")) return next();
-// 	const salt = await bcrypt.genSalt(10);
-// 	this.password = await bcrypt.hash(this.password, salt);
-// 	next();
-// });
-
-// userSchema.plugin(AutoIncrement, { id: "user_seq", inc_field: "_id" });
 
 module.exports = mongoose.model("User", userSchema);

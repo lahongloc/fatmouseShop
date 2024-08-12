@@ -19,6 +19,7 @@ import ReceiptsList from "./components/site-compos/ReceiptsList";
 import Footer from "./commons/Footer";
 import CustomerOrders from "./components/site-compos/CustomerOrders";
 import AppAppBar from "./components/site-compos/AppAppBar";
+import UsersList from "./components/site-compos/UsersList";
 
 export const UserContext = createContext();
 
@@ -119,6 +120,7 @@ function App() {
 					<Route path="/" element={<HomePage />} />
 					<Route path="/post-detail" element={<DocumentDetail />} />
 					<Route path="/test" element={<AppAppBar />} />
+					<Route path="/search-users" element={<UsersList />} />
 				</Routes>
 				<Footer />
 			</UserContext.Provider>

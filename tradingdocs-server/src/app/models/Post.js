@@ -6,7 +6,6 @@ const mongooseDelete = require("mongoose-delete");
 
 const postSchema = new Schema(
 	{
-		// _id: Number,
 		documentName: { type: String, required: true },
 		durability: { type: Boolean, required: true },
 		lecturer: { type: String },
@@ -33,14 +32,7 @@ const postSchema = new Schema(
 		quantity: { type: Number, required: true },
 	},
 	{ timestamps: true },
-	// { _id: false, timestamps: true },
 );
-
-// postSchema.plugin(AutoIncrement, { id: "post_seq", inc_field: "_id" });
-
-// postSchema.virtual("id").get(function () {
-// 	return this._id.toHexString();
-// });
 
 postSchema.plugin(mongooseDelete, {
 	deletedAt: true,

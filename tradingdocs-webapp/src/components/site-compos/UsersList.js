@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import APIs, { endpoints } from "../../configs/APIs";
 
-const UpdateImage = () => {
+const UsersList = () => {
 	const [users, setUsers] = useState([]);
 	const [searchTerm, setSearchTerm] = useState("");
 
@@ -136,4 +136,4 @@ const UpdateImage = () => {
 	);
 };
 
-export default UpdateImage;
+export default UsersList;

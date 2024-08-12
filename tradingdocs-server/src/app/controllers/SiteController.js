@@ -6,16 +6,6 @@ const Receipt = require("../models/Receipt");
 class SiteController {
 	// [GET] /
 	async index(req, res, next) {
-		// const result = await Receipt.deleteMany({});
-		// res.send(`Deleted ${result.deletedCount} receipts`);
-		// const p = new PostType({
-		// 	type: "GIFT",
-		// 	name: "Tặng",
-		// });
-
-		// p.save().then(() => res.json(p));
-
-		// Post.deleteMany({}).then(() => res.send("OK"));
 		try {
 			const posts = await Post.aggregate([
 				{
@@ -128,18 +118,6 @@ class SiteController {
 	async uploadImg(req, res, next) {
 		console.log("fileeee", req.file);
 		res.send("thanh cong");
-		// let result;
-		// try {
-		// 	result = await uploadImage(req.file.path, "publicId");
-		// 	console.log("Upload result:", result.uploadResult);
-		// 	console.log("Optimized URL:", result.optimizeUrl);
-		// 	console.log("Auto-cropped URL:", result.autoCropUrl);
-
-		// 	// res.send(result);
-		// } catch (error) {
-		// 	console.error("Failed to upload image:", error);
-		// 	res.status(500).send({ error: "Failed to upload image" });
-		// }
 	}
 }
 

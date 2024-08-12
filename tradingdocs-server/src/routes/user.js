@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../config/auth/jwtAuth");
 const authenticateToken = require("../app/middlewares/jwt/authenticateToken");
 
 const userController = require("../app/controllers/UserController");
@@ -9,6 +8,7 @@ router.post("/register", userController.register);
 router.post("/login", userController.login);
 router.get("/current-user", authenticateToken, userController.takeCurrentUser);
 router.post("/refresh-token", userController.refreshUser);
+router.get("/get-users", userController.getUsers);
 
 router.get(
 	"/postType-statistic",
@@ -31,14 +31,18 @@ router.get(
 	userController.getBuyerTotalPrice,
 );
 
-// router.get("/logout", (req, res) => {
-// 	res.clearCookie("refreshToken", {
-// 		httpOnly: true,
-// 		secure: true,
-// 		sameSite: "None",
-// 		path: "/",
-// 	});
-// 	res.status(200).json({ message: "Logged out successfully" });
-// });
+router.get("/clear-cookies", (req, res) => {
+	res.clearCookie("refreshToken", {
+		httpOnly: true,
+		secure: true,
+		sameSite: "None",
+		path: "/",
+	});
+	res.redirect(process.env.ORIGIN);
+});
+
+router.get("/logout", (req, res) => {
+	res.redirect("/user/clear-cookies");
+});
 
 module.exports = router;

@@ -107,6 +107,10 @@ function AppAppBar({ mode, toggleColorMode }) {
 			name: "Đơn hàng của khách",
 			link: "/all-orders",
 		},
+		{
+			name: "Tìm kiếm người dùng",
+			link: "/search-users",
+		},
 	];
 
 	const [navIndex, setNavIndex] = React.useState(0);
@@ -201,7 +205,10 @@ function AppAppBar({ mode, toggleColorMode }) {
 									variant="text"
 									size="small"
 									component="button"
-									sx={{ backgroundColor: "rgb(229 246 253)" }}
+									sx={{
+										backgroundColor: "rgb(229 246 253)",
+										ml: 2,
+									}}
 									onClick={() => {
 										setNavIndex("");
 										navigate("/upload-documents");

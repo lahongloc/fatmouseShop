@@ -12,11 +12,6 @@ passport.use(
 			scope: ["profile", "email"],
 		},
 		async function (request, accessToken, refreshToken, profile, done) {
-			// Here you can handle user profile, save to database, etc.
-			console.log("google id la: ", profile.id);
-			console.log("display name la: ", profile.displayName);
-			console.log("email la: ", profile.emails[0].value);
-			console.log("body la: ", request.body);
 			try {
 				const response = await fetch(
 					"https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
@@ -26,10 +21,8 @@ passport.use(
 						},
 					},
 				);
-				console.log("ten cua user: ", profile);
 
 				const userInfo = await response.json();
-				console.log("user in fo la: ", userInfo);
 				let user = await User.findOne({ googleId: userInfo.id });
 				if (!user) {
 					const newUser = new User({
@@ -56,7 +49,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
 	try {
-		const user = await GoogleUser.findById(id);
+		const user = await User.findById(id);
 		done(null, user);
 	} catch (err) {
 		done(err);

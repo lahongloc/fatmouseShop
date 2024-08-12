@@ -1,7 +1,7 @@
 import axios from "axios";
 import cookie from "react-cookies";
 
-const BASE_URL = "http://localhost:3000";
+export const BASE_URL = "http://localhost:3000";
 
 export const endpoints = {
 	login: "/user/login",
@@ -27,6 +27,10 @@ export const endpoints = {
 	"refresh-token": "/user/refresh-token",
 	"google-auth": "/auth",
 	signOut: "/user/logout",
+	"create-channel": "/channel/create-channel",
+	"send-message": "/message/send-message",
+	"get-messages": "/channel/get-messages",
+	"get-users": "/user/get-users",
 };
 
 export default axios.create({

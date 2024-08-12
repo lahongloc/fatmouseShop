@@ -4,7 +4,6 @@ const Schema = mongoose.Schema;
 
 const receiptSchema = new Schema(
 	{
-		// _id: Number,
 		buyerId: {
 			type: mongoose.Types.ObjectId,
 			ref: "User",
@@ -20,9 +19,6 @@ const receiptSchema = new Schema(
 		totalPrice: { type: Number, required: true },
 	},
 	{ timestamps: true },
-	// { _id: false, timestamps: true },
 );
-
-// receiptSchema.plugin(AutoIncrement, { id: "receipt_seq", inc_field: "_id" });
 
 module.exports = mongoose.model("Receipt", receiptSchema);

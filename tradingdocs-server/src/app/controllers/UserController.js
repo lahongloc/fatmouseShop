@@ -352,6 +352,20 @@ class UserController {
 			console.error(error);
 		}
 	}
+
+	// [GET] /user/get-users
+	async getUsers(req, res, next) {
+		try {
+			const users = await User.find(
+				{},
+				"fullName username email hotline role createdAt updatedAt",
+			);
+			res.json(users);
+		} catch (error) {
+			console.error("Error fetching users: ", error);
+			res.status(500).json({ message: "Internal Server Error" });
+		}
+	}
 }
 
 module.exports = new UserController();

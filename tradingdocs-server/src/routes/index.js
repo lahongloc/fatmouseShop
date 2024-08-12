@@ -5,6 +5,8 @@ const cateRouter = require("./category");
 const postTypeRouter = require("./postType");
 const receiptRouter = require("./receipt");
 const googleRouter = require("./googleStrategy");
+const channelRouter = require("./channel");
+const messageRouter = require("./message");
 
 function route(app) {
 	app.use("/", siteRouter);
@@ -14,6 +16,8 @@ function route(app) {
 	app.use("/postType", postTypeRouter);
 	app.use("/receipt", receiptRouter);
 	app.use("/auth", googleRouter);
+	app.use("/channel", channelRouter);
+	app.use("/message", messageRouter);
 }
 
 module.exports = route;

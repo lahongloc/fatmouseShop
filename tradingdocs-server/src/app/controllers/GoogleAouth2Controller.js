@@ -7,8 +7,6 @@ const client = require("../../config/database/redis/index");
 class GoogleOauth2Controller {
 	// [GET] /auth
 	home(req, res, next) {
-		// res.redirect("/auth/google");
-
 		res.send('<a href="/auth/google">Authenticate with google</a>');
 	}
 
@@ -62,7 +60,7 @@ class GoogleOauth2Controller {
 				maxAge: 7 * 24 * 60 * 60 * 1000,
 			});
 
-			res.redirect(`http://localhost:3001/`);
+			res.redirect(process.env.ORIGIN);
 		});
 	}
 }

@@ -200,7 +200,6 @@ class ReceiptController {
 				.map((receipt) => receipt.postId)
 				.map((postId) => postId.toString());
 
-			// const postIdString = postIds[0].toString();
 			// Fetch posts, including deleted ones
 			const deletedPosts = await Post.findWithDeleted({
 				deleted: true,
