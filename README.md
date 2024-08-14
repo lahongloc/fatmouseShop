@@ -74,4 +74,4 @@ This project is a full-featured website designed to help users exchange, buy, se
 ### Backend
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/project-name.git
+   git clone https://github.com/lahongloc/fatmouseShop.git
